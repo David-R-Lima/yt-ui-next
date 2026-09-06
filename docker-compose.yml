@@ -1,0 +1,11 @@
+services:
+  yt-ui-next:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yt-ui-next
+    restart: unless-stopped
+    ports:
+      - '3030:3000'
+    environment:
+      NODE_ENV: production
