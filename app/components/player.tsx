@@ -13,8 +13,8 @@ import { DivButton } from "./ui/div-but-button"
 import { HandleEvents } from "./handle-events"
 import { UpdateNowListening } from "@/services/now-listening"
 
-const baseUrl = process.env.NEXT_CLIENT_API_URL
-const token = process.env.NEXT_CLIENT_TOKEN
+const baseUrl = process.env.NEXT_PUBLIC_API_URL
+const token = process.env.NEXT_PUBLIC_TOKEN
 
 export function Controls() {
     const [open, setOpen] = useState(false);
