@@ -14,3 +14,9 @@ export async function GetMyLikedPlaylist({ pageToken }: props) {
 
   return data
 }
+
+export async function LoginYoutube() {
+  const data = await api.get<{ url: string }>('/youtube/auth-url')
+
+  return data
+}

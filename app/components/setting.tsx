@@ -8,7 +8,7 @@ import { Button } from "./ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { AddSong } from "@/services/songs";
 import { useState } from "react";
-
+import { LoginYoutube } from "@/services/youtube";
 
 export function SettingsDialog() {
 
@@ -16,6 +16,13 @@ export function SettingsDialog() {
 
     const addYoutubeSongMutation = useMutation({
         mutationFn: AddSong
+    })
+
+    const loginYoutube = useMutation({
+        mutationFn: LoginYoutube,
+        onSuccess: ({data}) => {
+            window.open(data.url, "_blank", "noopener,noreferrer")
+        }
     })
 
     return (
@@ -44,6 +51,17 @@ export function SettingsDialog() {
                                         url
                                     })
                                 }}>Add</Button>
+                            )}
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="log-yt">
+                        <AccordionTrigger className="hover:cursor-pointer">Youtube auth</AccordionTrigger>
+                        <AccordionContent>
+                            {loginYoutube.isPending && <Loader2 className="animate-spin"/>}
+                            {!loginYoutube.isPending && (
+                                <Button onClick={()=> {
+                                    loginYoutube.mutate()
+                                }}>Auth</Button>
                             )}
                         </AccordionContent>
                     </AccordionItem>
