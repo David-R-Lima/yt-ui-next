@@ -8,4 +8,9 @@ services:
     ports:
       - '3030:3000'
     environment:
-      NODE_ENV: production
+      NODE_ENV: ${NODE_ENV}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      NEXT_PUBLIC_TOKEN: ${NEXT_PUBLIC_TOKEN}
+      AUTH_USERNAME: ${AUTH_USERNAME}
+      AUTH_PASSWORD: ${AUTH_PASSWORD}
+      AUTH_SECRET: ${AUTH_SECRET}
