@@ -17,7 +17,7 @@ export function QuickSelectItem({item}: Props) {
             }}>
                 <div className="w-full">
                     {item.song?.img_url && (
-                        <img className="size-42 rounded-lg overflow-hidden" src={item.song?.img_url} alt="" />
+                        <img className="size-42 rounded-lg object-cover overflow-hidden" src={item.song?.img_url} alt="" />
                     )}
                 </div>
                 <div className="w-full">

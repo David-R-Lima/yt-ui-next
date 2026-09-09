@@ -154,7 +154,7 @@ export function Controls() {
     }, [currentSong, play, pause, nextSong, previousSong]);
 
     return (
-        <div className="flex flex-col w-[100vw] h-full overflow-hidden">
+        <div className="flex flex-col w-screen h-full overflow-hidden">
             <div className="z-5">
                 {currentSong && (
                     <div className="flex items-center w-full">

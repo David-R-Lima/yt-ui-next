@@ -15,18 +15,12 @@ interface HeaderProps {
 
 
 export function Header({ setHeaderState }: HeaderProps) {
-    return (
-        <div className="relative w-full h-16 flex items-center px-8">
-            {/* Center input */}
-            <div className="hidden lg:block absolute left-1/2 -translate-x-1/2 w-[400px]">
-                <Input className="w-full" />
-            </div>
-
-            {/* Right side */}
-            <div className="ml-auto flex items-center gap-4">
-                <SearchComboBox />
-                <SettingsDialog />
-            </div>
-        </div>
-    )
+  return (
+    <div className="w-full h-16 flex items-center px-8">
+      <div className="ml-auto flex items-center gap-4">
+        <SearchComboBox />
+        <SettingsDialog />
+      </div>
+    </div>
+  )
 }

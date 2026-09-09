@@ -39,10 +39,9 @@ return (
 
     {/* Main content */}
       <div className="row-start-1 col-start-1 md:col-start-2 min-w-0 min-h-0 flex flex-col">
-        <header className="shrink-0 flex items-center">
-          
+        <header className="shrink-0 flex items-center w-screen md:w-full">
           {/* Mobile menu */}
-          <div className="md:hidden px-4">
+          <div className="md:hidden shrink-0 px-4">
             <Sheet>
               <SheetTrigger asChild>
                 <button className="p-2 rounded-lg hover:bg-gray-800">
@@ -50,19 +49,19 @@ return (
                 </button>
               </SheetTrigger>
 
-              <SheetContent side="left" className="w-70">
+              <SheetContent side="left" className="w-[280px]">
                 <NavList show={true} />
               </SheetContent>
             </Sheet>
           </div>
 
-          <div className="flex-1">
+          {/* Header */}
+          <div className="min-w-0 flex-1">
             <Header
               state={state}
               setHeaderState={setState}
             />
           </div>
-
         </header>
 
         <section className="flex-1 min-h-0 overflow-y-auto w-screen md:w-full">
