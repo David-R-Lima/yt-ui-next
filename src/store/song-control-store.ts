@@ -48,7 +48,7 @@ const UseControls = create<ControlsState>((set, get) => ({
   shuffle: false,
   source: Source.ALL,
   sourceId: undefined,
-  orderBy: OrderBy.ASC,
+  orderBy: OrderBy.DESC,
   setOrderBy: (orderBy) => set({ orderBy }),
   setCurrentSong: async (song) => {
     const { shuffle, source, sourceId, orderBy } = get()

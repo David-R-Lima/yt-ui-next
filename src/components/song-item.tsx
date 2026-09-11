@@ -87,14 +87,14 @@ export function SongItem({ song, onClick, playlistId }: Props) {
     })
 
     return (
-        <div className="flex h-[70px] items-center justify-between w-full space-x-4 border-b rounded-lg p-2 m-2 hover:bg-secondary" >
+        <div className="flex h-17.5 items-center justify-between w-full space-x-4 border-b rounded-lg p-2 m-2 hover:bg-secondary" >
             <div className="flex items-center space-x-4 hover:cursor-pointer" onClick={() => {
                 onClick()
             }}> 
                 {song.img_url && (
-                    <img className="size-10" src={song.img_url} alt="" />
+                    <img className="size-10 object-cover" src={song.img_url} alt="" />
                 )}
-                <p className={`truncate max-w-[100px] md:max-w-[300px] lg:max-w-[350px] xl:max-w-full ${currentSong?.id === song.id && isPlaying ? "text-primary animate-pulse" : ""}`}>{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
+                <p className={`truncate max-w-25 md:max-w-75 lg:max-w-87.5 xl:max-w-full ${currentSong?.id === song.id && isPlaying ? "text-primary animate-pulse" : ""}`}>{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
 
                 {
                     song.duration && (

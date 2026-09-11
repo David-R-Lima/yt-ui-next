@@ -15,6 +15,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<HeaderState>(HeaderState.HOME)
   const { color } = useAppSettingsStore()
   const [show, setShow] = useState<boolean>(true)
+  const [sheetState, setSheetState] = useState<boolean>(true)
+  
 
 return (
     <main
@@ -34,7 +36,7 @@ return (
           <Menu />
         </button>
 
-        <NavList show={show} />
+        <NavList show={show} setSheetState={undefined}/>
       </aside>
 
     {/* Main content */}
@@ -42,15 +44,22 @@ return (
         <header className="shrink-0 flex items-center w-screen md:w-full">
           {/* Mobile menu */}
           <div className="md:hidden shrink-0 px-4">
-            <Sheet>
+            <Sheet open={sheetState} onOpenChange={() => {
+              setSheetState(!sheetState)
+            }}>
               <SheetTrigger asChild>
                 <button className="p-2 rounded-lg hover:bg-gray-800">
                   <Menu />
                 </button>
               </SheetTrigger>
 
-              <SheetContent side="left" className="w-[280px]">
-                <NavList show={true} />
+              <SheetContent side="left" className="w-70 py-4 px-2">
+                <button className=" px-2 rounded-lg hover:bg-gray-800" onClick={() => {
+                  setSheetState(!sheetState)
+                }}>
+                  <Menu />
+                </button>
+                <NavList show={show} setSheetState={setSheetState} />
               </SheetContent>
             </Sheet>
           </div>

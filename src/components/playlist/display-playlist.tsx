@@ -96,8 +96,8 @@ export function DisplayPlaylist({ playlistId }: Props) {
     }
 
     return (
-        <div className="flex flex-col w-full h-full">
-            <div className="flex items-center min-w-full bg-secondary rounded-t-xl">                
+        <div className="flex flex-col w-full h-full overflow-y-auto">
+            <div className="sticky top-0 z-20 bg-background flex items-center min-w-full rounded-t-xl px-4">              
               <div className="px-4 py-2">
                 <RefreshCcw className="hover:cursor-pointer" onClick={() => {
                   refetch()
@@ -117,7 +117,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
                       <Select value={order} defaultValue={orderBy} onValueChange={(e) => {
                         setOrder(e as OrderBy)
                       }}>
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-45">
                           <SelectValue placeholder="Order by" />
                         </SelectTrigger>
                         <SelectContent>
@@ -164,22 +164,8 @@ export function DisplayPlaylist({ playlistId }: Props) {
                 }}>Remove filters</Button>
               </div>
             </div>
-            <div className="flex justify-between w-full h-[75%] xl:h-[80%]">
-              <div className="hidden lg:flex flex-col items-center justify-center w-[30%] xl:w-[20%] h-full p-6 bg-primary rounded-bl-xl">
-                <div className="h-[50%] w-[80%]">
-                    {data?.playlist.img_url ? (
-                        <img src={data?.playlist.img_url ?? ""}></img>
-                    ) : (
-                        <Disc3 className="w-full h-full" />
-                    )}
-                </div>
-                <div className="text-xl">
-                    <p className="font-extrabold italic">Playlist: {data?.playlist.name}</p>
-                    <p className="font-extrabold italic">Description: {data?.playlist.description}</p>
-                    <p className="font-extrabold italic">Songs: {data?.meta.totalItems}</p>
-                </div>
-              </div>
-              <div className="w-full lg:w-[70%] xl:w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
+            <div className="flex justify-between w-full ">
+              <div className="w-full rounded-r-xl p-4 h-full">
                 {data && data?.playlist_songs && data?.playlist_songs.length > 0 ? (
                     data?.playlist_songs.map((playlistSong) => {
                     if (!playlistSong || !playlistSong.song) return null
