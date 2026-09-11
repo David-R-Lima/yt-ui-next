@@ -41,7 +41,7 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
                     <ChevronUp />
                 </DivButton>
             </SheetTrigger>
-            <SheetContent className="h-[100vh]" side="bottom">
+            <SheetContent className="h-screen" side="bottom">
                 <SheetTitle className="hidden"></SheetTitle>
                 <Button className="absolute top-4 right-4" onClick={() => {
                     setOpen(false)
@@ -49,7 +49,7 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
                     <ChevronDown />
                 </Button>
                                 
-                <div className="flex flex-col items-center justify-end w-full h-[100%] bg-secondary-foreground space-y-10">
+                <div className="flex flex-col items-center justify-end w-full h-full bg-secondary-foreground">
                     <div className="flex items-center justify-center size-150">
                         {currentSong?.img_url ? (
                             <img
@@ -83,7 +83,24 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
                                     audioRef.current.currentTime = newTime
                                 }
                                 }}
-                                className="w-full"
+                                className="progress-range"
+                                style={{
+                                    background: `linear-gradient(
+                                    to right,
+                                    var(--primary) 0%,
+                                    var(--primary) ${
+                                        currentSong?.duration
+                                        ? (currentTime / currentSong.duration) * 100
+                                        : 0
+                                    }%,
+                                    var(--muted) ${
+                                        currentSong?.duration
+                                        ? (currentTime / currentSong.duration) * 100
+                                        : 0
+                                    }%,
+                                    var(--muted) 100%
+                                    )`,
+                                }}
                                 aria-label="Progress bar"
                             />
                             </div>
@@ -149,7 +166,24 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
                                     audioRef.current.currentTime = newTime
                                 }
                                 }}
-                                className="w-full"
+                                className="progress-range"
+                                style={{
+                                    background: `linear-gradient(
+                                    to right,
+                                    var(--primary) 0%,
+                                    var(--primary) ${
+                                        currentSong?.duration
+                                        ? (currentTime / currentSong.duration) * 100
+                                        : 0
+                                    }%,
+                                    var(--muted) ${
+                                        currentSong?.duration
+                                        ? (currentTime / currentSong.duration) * 100
+                                        : 0
+                                    }%,
+                                    var(--muted) 100%
+                                    )`,
+                                }}
                                 aria-label="Progress bar"
                             />
                             </div>

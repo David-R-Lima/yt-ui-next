@@ -5,26 +5,21 @@ import { Header } from "../components/header"
 import { useState } from "react"
 import { HeaderState } from "@/enums/header"
 import { cn } from "../lib/utils"
-import { useAppSettingsStore } from "@/store/app-settings-store"
-import { Home } from "../components/home/home"
 import { NavList } from "@/components/navlist"
 import { Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<HeaderState>(HeaderState.HOME)
-  const { color } = useAppSettingsStore()
   const [show, setShow] = useState<boolean>(true)
-  const [sheetState, setSheetState] = useState<boolean>(true)
-  
+  const [sheetState, setSheetState] = useState<boolean>(false)
 
 return (
     <main
       className={cn(
         "h-screen w-screen overflow-hidden grid grid-rows-[1fr_auto]",
         "md:grid-cols-[220px_1fr]",
-        show ? "md:grid-cols-[180px_1fr]" : "md:grid-cols-[60px_1fr]",
-        color
+        show ? "md:grid-cols-[180px_1fr]" : "md:grid-cols-[60px_1fr]"
       )}
     >
     {/* Sidebar */}

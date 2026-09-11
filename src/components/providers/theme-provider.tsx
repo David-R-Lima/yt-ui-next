@@ -1,5 +1,7 @@
 'use client'
 
+import { Colors } from "@/enums/colors"
+import { useAppSettingsStore } from "@/store/app-settings-store"
 import { createContext, useContext, useEffect, useState } from "react"
 
 type Theme = "dark" | "light" | "system"
@@ -32,6 +34,8 @@ export function ThemeProvider({
     () => defaultTheme
   )
 
+    const { color } = useAppSettingsStore()
+
   useEffect(() => {
     const root = window.document.documentElement
 
@@ -49,6 +53,20 @@ export function ThemeProvider({
 
     root.classList.add(theme)
   }, [theme])
+
+  useEffect(() => {
+    const root = window.document.documentElement
+
+    // Remove previous color classes
+    Object.values(Colors).forEach((colorClass) => {
+      root.classList.remove(colorClass)
+    })
+
+    // Add selected color
+    if (color) {
+      root.classList.add(color)
+    }
+  }, [color])
 
   const value = {
     theme,

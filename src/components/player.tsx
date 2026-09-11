@@ -170,7 +170,24 @@ export function Controls() {
                                     audioRef.current.currentTime = newTime
                                 }
                             }}
-                            className="w-full"
+                            className="progress-range"
+                            style={{
+                                background: `linear-gradient(
+                                to right,
+                                var(--primary) 0%,
+                                var(--primary) ${
+                                    currentSong?.duration
+                                    ? (currentTime / currentSong.duration) * 100
+                                    : 0
+                                }%,
+                                var(--muted) ${
+                                    currentSong?.duration
+                                    ? (currentTime / currentSong.duration) * 100
+                                    : 0
+                                }%,
+                                var(--muted) 100%
+                                )`,
+                            }}
                             aria-label="Progress bar"
                         />
                     </div>
