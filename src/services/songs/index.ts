@@ -109,3 +109,9 @@ export async function DeleteSong({ song_id, hard_delete }: DeleteSongProps) {
 
   return data
 }
+
+export async function GetRecommended() {
+  const { data } = await api.get<Song[]>('/songs/recommended')
+
+  return data
+}

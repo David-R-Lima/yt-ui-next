@@ -5,9 +5,10 @@ import { Loader2, MoveLeft, MoveRight } from "lucide-react";
 import { YoutubeItem } from "./yt-video-item";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "@//components/ui/carousel";
 import { useEffect, useRef, useState } from "react";
-import { GetQuickSelect, GetRecommended } from "@//services/history";
+import { GetQuickSelect } from "@//services/history";
 import { QuickSelectItem } from "./quick-select-item";
 import { RecommendedItem } from "./recommended-item";
+import { GetRecommended } from "@/services/songs";
 
 
 export function Home() {
@@ -154,8 +155,8 @@ export function Home() {
                                 >
                                 {column.map((item, itemIndex) => (
                                     <RecommendedItem
-                                    key={item.song_id ?? itemIndex}
-                                    item={item}
+                                        key={item.id ?? itemIndex}
+                                        item={item}
                                     />
                                 ))}
                                 </div>
@@ -179,7 +180,7 @@ export function Home() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-4">
                                     {page.map((item, itemIndex) => (
                                         <RecommendedItem
-                                            key={item.song_id ?? itemIndex}
+                                            key={item.id ?? itemIndex}
                                             item={item}
                                         />
                                     ))}

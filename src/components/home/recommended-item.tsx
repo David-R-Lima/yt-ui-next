@@ -1,34 +1,34 @@
-import { History } from "../../services/history/types"
+import { Song } from "@/services/songs/types"
 import UseControls from "@/store/song-control-store"
 
 interface Props {
-    item: History
+    item: Song
 }
 
 export function RecommendedItem({ item }: Props) {
     const { currentSong, setCurrentSong, isPlaying } = UseControls()
 
-    const isCurrent = currentSong === item.song && isPlaying
+    const isCurrent = currentSong === item && isPlaying
 
     return (
         <div
             className="flex items-center gap-4 min-w-0 cursor-pointer"
             onClick={() => {
-                if (item.song) {
-                    setCurrentSong(item.song)
+                if (item) {
+                    setCurrentSong(item)
                 }
             }}
         >
-            {item.song?.img_url && (
+            {item?.img_url && (
                 <img
                     className="size-12 shrink-0 rounded-lg object-cover"
-                    src={item.song.img_url}
+                    src={item.img_url}
                     alt=""
                 />
             )}
 
             <div className="min-w-0 flex-1">
-                {item.song?.title && (
+                {item?.title && (
                     <h1
                         className={`truncate font-medium ${
                             isCurrent
@@ -36,11 +36,11 @@ export function RecommendedItem({ item }: Props) {
                                 : ""
                         }`}
                     >
-                        {item.song.title}
+                        {item.title}
                     </h1>
                 )}
 
-                {item.song?.artist && (
+                {item?.artist && (
                     <p
                         className={`truncate text-sm text-muted-foreground ${
                             isCurrent
@@ -48,7 +48,7 @@ export function RecommendedItem({ item }: Props) {
                                 : ""
                         }`}
                     >
-                        {item.song.artist}
+                        {item.artist}
                     </p>
                 )}
             </div>
