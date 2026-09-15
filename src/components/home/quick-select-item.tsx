@@ -17,15 +17,15 @@ export function QuickSelectItem({item}: Props) {
             }}>
                 <div className="w-full">
                     {item.song?.img_url && (
-                        <img className="size-42 rounded-lg object-cover overflow-hidden" src={item.song?.img_url} alt="" />
+                        <img className="size-36 md:size-42 rounded-lg object-cover overflow-hidden" src={item.song?.img_url} alt="" />
                     )}
                 </div>
                 <div className="w-full">
                     {item.song?.title && (
-                        <h1 className={`truncate max-w-[50%] ${currentSong === item.song && isPlaying ? "animate-pulse text-primary" : ""}`}>{item.song?.title}</h1>
+                        <h1 className={`truncate max-w-[35%] md:max-w-[50%] ${currentSong === item.song && isPlaying ? "animate-pulse text-primary" : ""}`}>{item.song?.title}</h1>
                     )}
                     {item.song?.artist && (
-                        <h1 className={`truncate max-w-[50%] ${currentSong === item.song && isPlaying ? "animate-pulse text-primary" : ""}`}>{item.song?.artist}</h1>
+                        <h1 className={`truncate max-w-[35%] md:max-w-[50%] ${currentSong === item.song && isPlaying ? "animate-pulse text-primary" : ""}`}>{item.song?.artist}</h1>
                     )}
                 </div>
             </div>

@@ -173,7 +173,7 @@ export function SearchComboBox() {
   return (
     <>
       {/* Desktop */}
-      <div ref={searchRef} className="block z-20 absolute left-1/2 -translate-x-1/2 md:-translate-x-1/3 w-80 md:w-100 lg:w-150">
+      <div ref={searchRef} className="block z-20 absolute left-1/2 -translate-x-1/2 w-60 md:w-100 lg:w-150">
         <Command shouldFilter={false}>
           <CommandInput
             value={textFilter}

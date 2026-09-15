@@ -94,7 +94,7 @@ export function Home() {
                 <Carousel setApi={setQuickSelectApi}>
                     <CarouselContent>
                         {historyQuery.data?.map((items, i) => (
-                            <CarouselItem key={i} className="basis-full sm:basis-1/2 md:basis-1/3 xl:basis-1/5">
+                            <CarouselItem key={i} className="basis-1/2 md:basis-1/3 xl:basis-1/5">
                                 <div className="flex flex-col space-y-4">
                                     {/* {items.map((item, j) => (
                                         <QuickSelectItem item={item} key={j}></QuickSelectItem>
