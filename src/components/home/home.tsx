@@ -91,7 +91,11 @@ export function Home() {
                         <MoveRight />
                     </div>
                 </div>
-                <Carousel setApi={setQuickSelectApi}>
+                <Carousel setApi={setQuickSelectApi} opts={
+                    {
+                        slidesToScroll: 3
+                    }
+                }>
                     <CarouselContent>
                         {historyQuery.data?.map((items, i) => (
                             <CarouselItem key={i} className="basis-1/2 md:basis-1/3 xl:basis-1/5">

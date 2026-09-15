@@ -11,7 +11,7 @@ export function NavList({show, setSheetState}: {show: boolean, setSheetState: Di
             <div className="flex flex-col py-2">
                 <div className="flex space-x-2 hover:cursor-pointer hover:bg-gray-800 p-2 rounded-lg" onClick={() => {
                     if(setSheetState) setSheetState(false)
-                    router.push("/")
+                    router.push("/home")
                 }}>
                     <Home className="text-primary hover:cursor-pointer"></Home>
                     {show && (
@@ -20,7 +20,7 @@ export function NavList({show, setSheetState}: {show: boolean, setSheetState: Di
                 </div>
                 <div className="flex space-x-2 hover:cursor-pointer hover:bg-gray-800 p-2 rounded-lg" onClick={() => {
                     if(setSheetState) setSheetState(false)
-                    router.push("/playlist")
+                    router.push("/home/playlist")
                 }}>
                     <ListEnd className="text-primary hover:cursor-pointer"/>
                     {show && (

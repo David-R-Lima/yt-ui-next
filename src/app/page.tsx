@@ -1,4 +1,3 @@
-import App from "./App";
 import { Toaster } from "../components/ui/sonner";
 import { Socket } from "../components/providers/socket-provider";
 import { InitLastHeard } from "../components/init-last-heard-song";
@@ -10,6 +9,8 @@ export default async function Home() {
 
   if (!authenticated) {
     redirect("/login");
+  } else {
+    redirect("/home")
   }
 
   return (
@@ -17,7 +18,6 @@ export default async function Home() {
       <Toaster position="top-right" />
       <InitLastHeard />
       <Socket />
-      <App />
     </>
   );
 }

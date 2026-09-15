@@ -3,13 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@//components/providers/react-query-provider";
 import { ThemeProvider } from "@//components/providers/theme-provider";
-import Shell from "@/components/shell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
+ 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -29,9 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <ThemeProvider defaultTheme="dark">
         <body className="min-h-full flex flex-col">
           <ReactQueryProvider>
-            <Shell>
               {children}
-            </Shell>
           </ReactQueryProvider>
         </body>
       </ThemeProvider>

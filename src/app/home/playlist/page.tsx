@@ -1,7 +1,7 @@
 "use client"
 
 import { ArrowDown, ArrowUp, AudioLines, Loader2, Plus } from "lucide-react"
-import { usePlaylists } from "../../hooks/usePlaylists"
+import { usePlaylists } from "@/hooks/usePlaylists"
 import { notFound, useRouter } from "next/navigation"
 import { useState } from "react"
 import { AddPlaylistDialog } from "@/components/add-playlist-dialog"
@@ -23,7 +23,7 @@ export default function Playlist() {
         <div className="flex w-full h-full">
             <div className="flex flex-col p-4 w-full">
                 <div className="flex items-center space-x-2 hover:cursor-pointer hover:bg-secondary rounded-lg p-2 w-full" onClick={() => {
-                        router.push("/playlist/" + "all")
+                        router.push("/home/playlist/" + "all")
                     }}>
                         <div>
                             <AudioLines className="text-primary size-10 object-cover"></AudioLines>
@@ -38,7 +38,7 @@ export default function Playlist() {
                         </div>
                 </div>
                 <div className="flex items-center space-x-2 hover:cursor-pointer hover:bg-secondary rounded-lg p-2 w-full" onClick={() => {
-                        router.push("/playlist/" + "liked")
+                        router.push("/home/playlist/" + "liked")
                     }}>
                         <div>
                             <AudioLines className="text-primary size-10 object-cover"></AudioLines>
@@ -53,7 +53,7 @@ export default function Playlist() {
                         </div>
                 </div>
                 <div className="flex items-center space-x-2 hover:cursor-pointer hover:bg-secondary rounded-lg p-2 w-full" onClick={() => {
-                        router.push("/playlist/" + "history")
+                        router.push("/home/playlist/" + "history")
                     }}>
                         <div>
                             <AudioLines className="text-primary size-10 object-cover"></AudioLines>
@@ -85,7 +85,7 @@ export default function Playlist() {
                 {displayCustomPlaylist && playlistQuery.data?.playlists.map((playlist) => {
                     return (
                         <div className="flex items-center space-x-2 hover:cursor-pointer hover:bg-secondary rounded-lg p-2 w-full" key={playlist.id} onClick={() => {
-                            router.push("/playlist/" + playlist.id)
+                            router.push("/home/playlist/" + playlist.id)
                         }}>
                             <div>
                                 {playlist.img_url ? (
