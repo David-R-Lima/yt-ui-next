@@ -172,8 +172,7 @@ export function SearchComboBox() {
 
   return (
     <>
-      {/* Desktop */}
-      <div ref={searchRef} className="block z-20 absolute left-1/2 -translate-x-1/2 w-60 md:w-100 lg:w-150">
+      <div ref={searchRef} className="block z-30 absolute left-1/2 -translate-x-1/2 w-60 md:w-100 lg:w-150">
         <Command shouldFilter={false}>
           <CommandInput
             value={textFilter}
@@ -192,29 +191,6 @@ export function SearchComboBox() {
           )}
         </Command>
       </div>
-
-      {/* Mobile */}
-      {/* <div className="md:hidden">
-        <div ref={searchRef} className="block md:hidden z-20 absolute top-4 left-1/2 -translate-x-1/2 w-70">
-          <Command shouldFilter={false}>
-            <CommandInput
-              value={textFilter}
-              onValueChange={setText}
-              placeholder="Search..."
-            />
-
-            {textFilter && (
-              <div className="absolute top-full left-0 z-50 mt-2 w-full overflow-hidden rounded-md border bg-popover shadow-md">
-                <SearchResults
-                  songs={data?.songs ?? []}
-                  observerRef={observerRef}
-                  setCurrentSong={setCurrentSong}
-                />
-              </div>
-            )}
-          </Command>
-        </div>
-      </div> */}
     </>
   )
 }
