@@ -48,6 +48,8 @@ export default function Login() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    console.log("asksdljal")
+
     loginMutation.mutate({
       username,
       password,

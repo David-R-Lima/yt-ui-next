@@ -57,9 +57,9 @@ function SearchResults({
               )}
 
               <div className="flex flex-col">
-                <p className="truncate max-w-50 md:max-w-100 lg:max-w-130">{song.title}</p>
-                <div className="flex items-center space-x-2">
-                  <p>{song.artist}</p>
+                <p className="truncate max-w-40 md:max-w-100 lg:max-w-130">{song.title}</p>
+                <div className="flex items-center space-x-2 max-w-40">
+                  <p className="truncate">{song.artist}</p>
                 </div>
               </div>
             </CommandItem>

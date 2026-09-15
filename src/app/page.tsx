@@ -12,12 +12,4 @@ export default async function Home() {
   } else {
     redirect("/home")
   }
-
-  return (
-    <>
-      <Toaster position="top-right" />
-      <InitLastHeard />
-      <Socket />
-    </>
-  );
 }

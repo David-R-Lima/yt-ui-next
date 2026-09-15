@@ -7,7 +7,10 @@ interface Props {
 }
 
 export function QuickSelectItem({item}: Props) {
-    const { currentSong, setCurrentSong, isPlaying } = UseControls()
+    const { currentSong, setCurrentSong, isPlaying,  } = UseControls()
+    
+    const isCurrent = currentSong === item.song && isPlaying
+
     return (
         <div className="w-100 flex items-center hover:cursor-pointer">
             <div className="w-full flex flex-col space-y-2 items-center" onClick={() => {
@@ -22,10 +25,26 @@ export function QuickSelectItem({item}: Props) {
                 </div>
                 <div className="w-full">
                     {item.song?.title && (
-                        <h1 className={`truncate max-w-[35%] md:max-w-[50%] ${currentSong === item.song && isPlaying ? "animate-pulse text-primary" : ""}`}>{item.song?.title}</h1>
+                        <h1
+                            className={`truncate font-medium max-w-[35%] md:max-w-[50%] ${
+                                isCurrent
+                                    ? "animate-pulse text-primary"
+                                    : ""
+                            }`}
+                        >
+                            {item.song.title}
+                        </h1>
                     )}
                     {item.song?.artist && (
-                        <h1 className={`truncate max-w-[35%] md:max-w-[50%] ${currentSong === item.song && isPlaying ? "animate-pulse text-primary" : ""}`}>{item.song?.artist}</h1>
+                        <p
+                            className={`truncate text-sm text-muted-foreground max-w-[35%] md:max-w-[50%] ${
+                                isCurrent
+                                    ? "animate-pulse text-primary"
+                                    : ""
+                            }`}
+                        >
+                            {item.song.artist}
+                        </p>
                     )}
                 </div>
             </div>

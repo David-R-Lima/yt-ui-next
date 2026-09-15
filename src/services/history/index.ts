@@ -39,3 +39,9 @@ export async function GetQuickSelect() {
 
   return data
 }
+
+export async function GetRecommended() {
+  const { data } = await api.get<History[]>('/songs/recommended')
+
+  return data
+}
