@@ -9,26 +9,83 @@ import {
   CommandList,
 } from "./ui/command"
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog"
-
-import { Search } from "lucide-react"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { GetSongs } from "../services/songs"
 import { useEffect, useRef, useState } from "react"
 import UseControls from "@/store/song-control-store"
-import { Input } from "./ui/input"
 import { Song } from "@/services/songs/types"
+
+interface SearchResultsProps {
+  songs: Song[]
+  observerRef: React.RefObject<HTMLDivElement | null>
+  setCurrentSong: (song: Song) => void
+  onSelect?: () => void
+}
+
+function SearchResults({
+  songs,
+  observerRef,
+  setCurrentSong,
+  onSelect,
+}: SearchResultsProps) {
+  if (songs.length === 0) {
+    return <CommandEmpty>No results found.</CommandEmpty>
+  }
+
+  return (
+    <CommandList>
+      <CommandGroup>
+        {songs.map((song, index) => {
+          const isLast = index === songs.length - 1
+
+          const item = (
+            <CommandItem
+              key={song.id}
+              value={song.title}
+              onSelect={() => {
+                setCurrentSong(song)
+                onSelect?.()
+              }}
+              className="flex flex-row items-center hover:cursor-pointer"
+            >
+              {song.img_url && (
+                <img
+                  className="size-10 object-cover"
+                  src={song.img_url}
+                  alt=""
+                />
+              )}
+
+              <div className="flex flex-col">
+                <p className="truncate max-w-50 md:max-w-100 lg:max-w-130">{song.title}</p>
+                <div className="flex items-center space-x-2">
+                  <p>{song.artist}</p>
+                </div>
+              </div>
+            </CommandItem>
+          )
+
+          if (isLast) {
+            return (
+              <div ref={observerRef} key={song.id}>
+                {item}
+              </div>
+            )
+          }
+
+          return item
+        })}
+      </CommandGroup>
+    </CommandList>
+  )
+}
 
 export function SearchComboBox() {
   const [open, setOpen] = useState(false)
   const [textFilter, setText] = useState("")
 
   const { setCurrentSong } = UseControls()
+
   const observerRef = useRef<HTMLDivElement | null>(null)
 
   const {
@@ -94,66 +151,29 @@ export function SearchComboBox() {
     data,
   ])
 
-  const selectSong = (song: Song) => {
-    setCurrentSong(song)
-    setOpen(false)
-  }
+  const searchRef = useRef<HTMLDivElement | null>(null)
 
-  interface SearchResultsProps {
-  songs: Song[]
-  observerRef: React.RefObject<HTMLDivElement | null>
-  setCurrentSong: (song: Song) => void
-  onSelect?: () => void
-}
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setText("")
+      }
+    }
 
-function SearchResults({
-  songs,
-  observerRef,
-  setCurrentSong,
-  onSelect,
-}: SearchResultsProps) {
-  if (songs.length === 0) {
-    return <CommandEmpty>No results found.</CommandEmpty>
-  }
+    document.addEventListener("mousedown", handleClickOutside)
 
-  return (
-    <CommandList>
-      <CommandGroup>
-        {songs.map((song, index) => {
-          const isLast = index === songs.length - 1
-
-          const item = (
-            <CommandItem
-              key={song.id}
-              value={song.title}
-              onSelect={() => {
-                setCurrentSong(song)
-                onSelect?.()
-              }}
-            >
-              {song.title}
-            </CommandItem>
-          )
-
-          if (isLast) {
-            return (
-              <div ref={observerRef} key={song.id}>
-                {item}
-              </div>
-            )
-          }
-
-          return item
-        })}
-      </CommandGroup>
-    </CommandList>
-  )
-}
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   return (
     <>
       {/* Desktop */}
-      <div className="hidden z-20 lg:block absolute left-1/2 -translate-x-1/2 w-100">
+      <div ref={searchRef} className="block z-20 absolute left-1/2 -translate-x-1/2 md:-translate-x-1/3 w-80 md:w-100 lg:w-150">
         <Command shouldFilter={false}>
           <CommandInput
             value={textFilter}
@@ -174,35 +194,27 @@ function SearchResults({
       </div>
 
       {/* Mobile */}
-      <div className="lg:hidden">
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <button className="p-2 rounded-lg hover:bg-gray-800">
-              <Search className="text-primary" />
-            </button>
-          </DialogTrigger>
+      {/* <div className="md:hidden">
+        <div ref={searchRef} className="block md:hidden z-20 absolute top-4 left-1/2 -translate-x-1/2 w-70">
+          <Command shouldFilter={false}>
+            <CommandInput
+              value={textFilter}
+              onValueChange={setText}
+              placeholder="Search..."
+            />
 
-          <DialogContent>
-            <DialogTitle>Search...</DialogTitle>
-
-            <Command shouldFilter={false}>
-              <CommandInput
-                value={textFilter}
-                onValueChange={setText}
-                placeholder="Search..."
-              />
-
-              <SearchResults
-                songs={data?.songs ?? []}
-                observerRef={observerRef}
-                setCurrentSong={setCurrentSong}
-                onSelect={() => setOpen(false)}
-              />
-            </Command>
-
-          </DialogContent>
-        </Dialog>
-      </div>
+            {textFilter && (
+              <div className="absolute top-full left-0 z-50 mt-2 w-full overflow-hidden rounded-md border bg-popover shadow-md">
+                <SearchResults
+                  songs={data?.songs ?? []}
+                  observerRef={observerRef}
+                  setCurrentSong={setCurrentSong}
+                />
+              </div>
+            )}
+          </Command>
+        </div>
+      </div> */}
     </>
   )
 }
