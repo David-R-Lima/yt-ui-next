@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@//components/providers/react-query-provider";
 import { ThemeProvider } from "@//components/providers/theme-provider";
+import { PlayerTitle } from "@/components/playerTitle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <ThemeProvider defaultTheme="dark">
         <body className="min-h-full flex flex-col">
           <ReactQueryProvider>
+              <PlayerTitle></PlayerTitle>
               {children}
           </ReactQueryProvider>
         </body>

@@ -90,7 +90,7 @@ const UseControls = create<ControlsState>((set, get) => ({
   setCurrentSongFromSideBar: async (newIndex: number) => {
     const { playlist, shuffle, source, sourceId, orderBy } = get()
 
-    let tempPlaylist = [...playlist]
+    const tempPlaylist = [...playlist]
     const song = tempPlaylist[newIndex]
 
     if (!song) return
@@ -153,19 +153,6 @@ const UseControls = create<ControlsState>((set, get) => ({
   setSource: (source) => set({ source }),
   setSourceId: (sourceId) => set({ sourceId }),
   play: async () => {
-    // const { shuffle, source, sourceId, currentSong } = get()
-
-    // if (nextSongs && nextSongs.length === 0) {
-    //   const next = await GetNextSongs({
-    //     random: shuffle ? Random.TRUE : undefined,
-    //     source: source,
-    //     sourceId: sourceId,
-    //     startId: currentSong?.id,
-    //   })
-
-    //   setNextSongs(next)
-    // }
-
     set({
       isPlaying: true,
     })

@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import useControls from "../store/song-control-store"
-import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftFromLine, ArrowRightToLine, ArrowUpIcon, AudioLines, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
 import { Button } from "./ui/button"
 import { AddSongToHistory } from "../services/history"
 import { NextSongsSheet } from "./next-songs-sheet"
@@ -16,8 +16,7 @@ import { UpdateNowListening } from "../services/now-listening"
 const baseUrl = process.env.NEXT_PUBLIC_API_URL
 const token = process.env.NEXT_PUBLIC_TOKEN
 
-export function Controls() {
-    const [open, setOpen] = useState(false);
+export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetStateAction<boolean>>}) {
     const [addedToHistory, setAddedToHistory] = useState(false)
 
     const {
@@ -193,9 +192,12 @@ export function Controls() {
                     </div>
                 )}
         
-                <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2">
+                <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2" onClick={() => {
+                    setOpen(true)
+                }}>
                     <div className="hidden md:flex space-x-4">
-                        <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
+                        <Button className="text-accent-foreground" variant={"secondary"} onClick={(e) => {
+                            e.stopPropagation()
                             if(currentTime > 5) {
                                 if (audioRef.current) {
                                     audioRef.current.currentTime = 0
@@ -208,21 +210,27 @@ export function Controls() {
                             <ArrowLeftFromLine />
                         </Button>
                         <Button
-                            onClick={isPlaying ? pause : play}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                if(isPlaying) {
+                                    pause()
+                                } else {
+                                    play()
+                                }
+                            }}
                             variant={'secondary'}
                             className="px-4 py-2 bg-primary"
                         >
                             {isPlaying ? <Pause/> : <Play/>}
                         </Button>
-                        <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
+                        <Button className="text-accent-foreground" variant={"secondary"} onClick={(e) => {
+                            e.stopPropagation()
                             nextSong()
                         }}>
                             <ArrowRightToLine />
                         </Button>
                     </div>
-                    <div className="flex items-center space-x-4" onClick={() => {
-                        setOpen(true)
-                    }}>
+                    <div className="flex items-center space-x-4">
                         {currentSong?.img_url ? (
                             <img
                                 className="size-16 object-cover text-primary rounded"
@@ -276,7 +284,23 @@ export function Controls() {
                             <Shuffle size={20} />
                         </Button>
                         <NextSongsSheet />
-                        <OpenCurrentSongSheet open={open} setOpen={setOpen} audioRef={audioRef}/>
+                        {open ? (
+                            <Button onClick={(e) => {
+                                e.stopPropagation()
+                                setOpen(false)
+                            }}>
+                                <ArrowDownIcon />
+                            </Button>
+                        ) : (
+                            <Button onClick={(e) => {
+                                e.stopPropagation()
+                                setOpen(true)
+                            }}>
+                                <ArrowUpIcon />
+                            </Button>
+                        )}
+
+                        {/* <OpenCurrentSongSheet open={open} setOpen={setOpen} audioRef={audioRef}/> */}
                     </div>
                 </div>
             </div>

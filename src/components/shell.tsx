@@ -13,6 +13,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<HeaderState>(HeaderState.HOME)
   const [show, setShow] = useState<boolean>(true)
   const [sheetState, setSheetState] = useState<boolean>(false)
+  const [openControls, setOpenControls] = useState<boolean>(false)
 
 return (
     <main
@@ -69,11 +70,11 @@ return (
         </header>
 
         <section className="flex-1 min-h-0 overflow-y-auto w-screen md:w-full">
-          {children}
+          {openControls ? ( <div></div> ) : (<>{children}</>)}
         </section>
       </div>
     <div className="row-start-2 col-span-2 w-full">
-      <Controls />
+      <Controls open={openControls} setOpen={setOpenControls} />
     </div>
   </main>
 )
