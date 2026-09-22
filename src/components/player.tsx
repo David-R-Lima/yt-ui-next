@@ -196,7 +196,11 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                 )}
         
                 <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2" onClick={() => {
-                    setOpen(true)
+                    if(open) {
+                        setOpen(false)
+                    } else {
+                        setOpen(true)
+                    }
                 }}>
                     <div className="hidden md:flex space-x-4">
                         <Button className="text-accent-foreground" variant={"secondary"} onClick={(e) => {

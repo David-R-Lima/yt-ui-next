@@ -20,7 +20,7 @@ export function OpenControls() {
                 )}
             </div>
 
-            <div className="w-full max-h-full overflow-x-hidden overflow-y-auto p-8">
+            <div className="w-full max-h-full overflow-x-hidden overflow-y-auto p-4">
                 {playlist.map((song, i) => (
                     <div
                         className="w-full flex justify-between items-center gap-4 mb-4 hover:cursor-pointer"
