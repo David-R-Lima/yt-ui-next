@@ -12,9 +12,12 @@ import { Slider } from "./ui/slider"
 import { DivButton } from "./ui/div-but-button"
 import { HandleEvents } from "./handle-events"
 import { UpdateNowListening } from "../services/now-listening"
+import { formatTime } from "@/lib/formatTime"
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL
 const token = process.env.NEXT_PUBLIC_TOKEN
+
+
 
 export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetStateAction<boolean>>}) {
     const [addedToHistory, setAddedToHistory] = useState(false)
@@ -229,6 +232,11 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         }}>
                             <ArrowRightToLine />
                         </Button>
+                        <div className="flex items-center justify-center space-x-2 text-muted-foreground text-sm">
+                            <p>{formatTime(currentTime)}</p>
+                            <p>/</p>
+                            <p>{formatTime(currentSong?.duration)}</p>
+                        </div>
                     </div>
                     <div className="flex items-center space-x-4">
                         {currentSong?.img_url ? (
@@ -241,8 +249,9 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                             <AudioLines className="w-16 h-16 text-primary"/>
                         )}
 
-                        <div className="text-lg text-primary font-semibold">
-                            <p className="truncate max-w-[150px] md:max-w-[200px] lg:max-w-[400px] xl:max-w-[700px] 2xl:max-w-full">{currentSong ? `${currentSong.title?.replace(/\.mp3$/i, '')}` : 'No song selected'}</p>
+                        <div className="flex flex-col text-lg text-primary font-semibold">
+                            <p className="truncate max-w-[150px] md:max-w-[200px] lg:max-w-[400px] xl:max-w-[700px] 2xl:max-w-full">{currentSong ? `${currentSong.title}` : 'No song selected'}</p>
+                            <p className="truncate text-sm text-muted-foreground max-w-[150px] md:max-w-[200px] lg:max-w-[400px] xl:max-w-[700px]">{currentSong?.artist}</p>
                         </div>
                     </div>
                     <div className="flex md:hidden">

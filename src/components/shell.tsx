@@ -8,6 +8,7 @@ import { cn } from "../lib/utils"
 import { NavList } from "@/components/navlist"
 import { Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { OpenControls } from "./open-control"
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<HeaderState>(HeaderState.HOME)
@@ -27,7 +28,10 @@ return (
       <aside className="hidden md:block row-start-1 col-start-1 overflow-hidden border-r-2 border-gray-800 p-2">
         <button
           className="flex w-full p-2 rounded-lg hover:cursor-pointer hover:bg-gray-800"
-          onClick={() => setShow(!show)}
+          onClick={() => {
+            setShow(!show)
+            setOpenControls(false)
+          }}
         >
           <Menu />
         </button>
@@ -42,6 +46,7 @@ return (
           <div className="md:hidden shrink-0 px-4">
             <Sheet open={sheetState} onOpenChange={() => {
               setSheetState(!sheetState)
+              setOpenControls(false)
             }}>
               <SheetTrigger asChild>
                 <button className="p-2 rounded-lg hover:bg-gray-800">
@@ -70,12 +75,12 @@ return (
         </header>
 
         <section className="flex-1 min-h-0 overflow-y-auto w-screen md:w-full">
-          {openControls ? ( <div></div> ) : (<>{children}</>)}
+          {openControls ? ( <OpenControls /> ) : (<>{children}</>)}
         </section>
       </div>
-    <div className="row-start-2 col-span-2 w-full">
-      <Controls open={openControls} setOpen={setOpenControls} />
-    </div>
+      <div className="row-start-2 col-span-2 w-full">
+        <Controls open={openControls} setOpen={setOpenControls} />
+      </div>
   </main>
 )
 }
