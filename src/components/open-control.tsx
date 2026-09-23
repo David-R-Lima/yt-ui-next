@@ -8,7 +8,7 @@ export function OpenControls() {
     const { currentSong, playlist, setCurrentSong } = UseControls()
     return (
         <div className="flex flex-col md:grid md:grid-cols-[minmax(0,1fr)_50%] lg:grid-cols-[minmax(0,1fr)_35%] w-full h-full">
-            <div className="flex items-center justify-center min-w-0 p-4">
+            <div className="flex items-center justify-center min-w-0 p-2">
                 {currentSong?.img_url ? (
                     <img
                         className="size-36 md:size-48 lg:size-86 object-cover rounded"

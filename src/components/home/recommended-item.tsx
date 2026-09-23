@@ -14,9 +14,9 @@ export function RecommendedItem({ item }: Props) {
         <div
             className="flex items-center gap-4 min-w-0 cursor-pointer"
             onClick={() => {
-                if (item) {
-                    setCurrentSong(item)
-                }
+                // if (item) {
+                //     setCurrentSong(item)
+                // }
             }}
         >
             {item?.img_url && (

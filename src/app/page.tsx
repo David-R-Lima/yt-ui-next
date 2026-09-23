@@ -1,6 +1,3 @@
-import { Toaster } from "../components/ui/sonner";
-import { Socket } from "../components/providers/socket-provider";
-import { InitLastHeard } from "../components/init-last-heard-song";
 import { isAuthenticated } from "../lib/auth";
 import { redirect } from "next/navigation";
 

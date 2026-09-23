@@ -10,7 +10,6 @@ import { QuickSelectItem } from "./quick-select-item";
 import { RecommendedItem } from "./recommended-item";
 import { GetRecommended } from "@/services/songs";
 
-
 export function Home() {
     const [api, setApi] = useState<CarouselApi>()
     const [quickSelectApi, setQuickSelectApi] = useState<CarouselApi>()

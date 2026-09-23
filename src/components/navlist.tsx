@@ -4,12 +4,13 @@ import { Home, ListEnd } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 
-export function NavList({show, setSheetState}: {show: boolean, setSheetState: Dispatch<SetStateAction<boolean>> | undefined}) {
+export function NavList({show, setSheetState, setOpenControls}: {show: boolean, setSheetState: Dispatch<SetStateAction<boolean>> | undefined, setOpenControls: Dispatch<SetStateAction<boolean>>} ) {
     const router = useRouter()
     return (
         <div className="h-screen">
             <div className="flex flex-col py-2">
                 <div className="flex space-x-2 hover:cursor-pointer hover:bg-gray-800 p-2 rounded-lg" onClick={() => {
+                    setOpenControls(false)
                     if(setSheetState) setSheetState(false)
                     router.push("/home")
                 }}>
@@ -19,6 +20,7 @@ export function NavList({show, setSheetState}: {show: boolean, setSheetState: Di
                     )}
                 </div>
                 <div className="flex space-x-2 hover:cursor-pointer hover:bg-gray-800 p-2 rounded-lg" onClick={() => {
+                    setOpenControls(false)
                     if(setSheetState) setSheetState(false)
                     router.push("/home/playlist")
                 }}>

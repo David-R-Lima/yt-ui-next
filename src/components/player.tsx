@@ -194,7 +194,57 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         />
                     </div>
                 )}
-        
+                <div className="flex md:hidden w-full items-center justify-center bg-secondary-foreground pt-4 space-x-4" onClick={(e) => {
+                    e.stopPropagation()
+                }}>
+                    <Button
+                        onClick={setRepeat}
+                        className="text-accent-foreground"
+                        variant={repeat ? 'default' : 'secondary'}
+                    >
+                        <Repeat size={20} />
+                    </Button>
+                    <Button className="text-accent-foreground" variant={"secondary"} onClick={(e) => {
+                        e.stopPropagation()
+                        if(currentTime > 5) {
+                            if (audioRef.current) {
+                                audioRef.current.currentTime = 0
+                                setCurrentTime(0)
+                            }
+                        } else {
+                            previousSong()
+                        }
+                    }}>
+                        <ArrowLeftFromLine />
+                    </Button>
+                    <Button
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            if(isPlaying) {
+                                pause()
+                            } else {
+                                play()
+                            }
+                        }}
+                        variant={'secondary'}
+                        className="size-12 px-4 py-2 bg-primary"
+                    >
+                        {isPlaying ? <Pause/> : <Play/>}
+                    </Button>
+                    <Button className="text-accent-foreground" variant={"secondary"} onClick={(e) => {
+                        e.stopPropagation()
+                        nextSong()
+                    }}>
+                        <ArrowRightToLine />
+                    </Button>
+                    <Button
+                        onClick={setShuffle}
+                        className="text-accent-foreground"
+                        variant={shuffle ? 'default' : 'secondary'}
+                    >
+                        <Shuffle size={20} />
+                    </Button>
+                </div>
                 <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2" onClick={() => {
                     if(open) {
                         setOpen(false)
@@ -254,11 +304,11 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         )}
 
                         <div className="flex flex-col text-lg text-primary font-semibold">
-                            <p className="truncate max-w-[150px] md:max-w-[200px] lg:max-w-[400px] xl:max-w-[700px] 2xl:max-w-full">{currentSong ? `${currentSong.title}` : 'No song selected'}</p>
-                            <p className="truncate text-sm text-muted-foreground max-w-[150px] md:max-w-[200px] lg:max-w-[400px] xl:max-w-[700px]">{currentSong?.artist}</p>
+                            <p className="truncate max-w-62.5 md:max-w-50 lg:max-w-100 xl:max-w-175 2xl:max-w-full">{currentSong ? `${currentSong.title}` : 'No song selected'}</p>
+                            <p className="truncate text-sm text-muted-foreground max-w-62.5 md:max-w-50 lg:max-w-100 xl:max-w-175">{currentSong?.artist}</p>
                         </div>
                     </div>
-                    <div className="flex md:hidden">
+                    {/* <div className="flex md:hidden">
                         <Button
                             onClick={isPlaying ? pause : play}
                             variant={'secondary'}
@@ -266,9 +316,11 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         >
                             {isPlaying ? <Pause/> : <Play/>}
                         </Button>
-                    </div>
+                    </div> */}
 
-                    <div className="hidden md:flex gap-4">
+                    <div className="hidden md:flex gap-4" onClick={(e) =>{
+                        e.stopPropagation()
+                    }}>
                         <Popover>
                             <PopoverTrigger>
                                 <DivButton>
@@ -296,7 +348,6 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         >
                             <Shuffle size={20} />
                         </Button>
-                        <NextSongsSheet />
                         {open ? (
                             <Button onClick={(e) => {
                                 e.stopPropagation()
