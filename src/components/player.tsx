@@ -85,13 +85,14 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
         if (currentSong && currentTime >= 10 && !addedToHistory) {
             AddSongToHistory({ song_id: currentSong.id })
                 .catch(console.error)
+
             setAddedToHistory(true)
         }
+    }, [currentTime, currentSong, addedToHistory])
 
-        return () => {
-            setAddedToHistory(false)
-        }
-    }, [currentTime, currentSong])
+    useEffect(() => {
+        setAddedToHistory(false)
+    }, [currentSong])
 
     useEffect(() => {
         if(currentSong) {
