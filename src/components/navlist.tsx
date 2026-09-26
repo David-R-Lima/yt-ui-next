@@ -29,6 +29,22 @@ export function NavList({show, setSheetState, setOpenControls}: {show: boolean, 
                         <p>Playlists</p>
                     )}
                 </div>
+                <div className="flex items-center space-x-2 hover:cursor-pointer hover:bg-gray-800 p-2 rounded-lg" onClick={() => {
+                    setOpenControls(false)
+                    if(setSheetState) setSheetState(false)
+                    router.push("/home/youtube")
+                }}>
+                    <div
+                        className="size-6 bg-primary"
+                        style={{
+                            mask: "url('/youtubemusic.svg') center / contain no-repeat",
+                            WebkitMask: "url('/youtubemusic.svg') center / contain no-repeat",
+                        }}
+                    />
+                    {show && (
+                        <p>Youtube</p>
+                    )}
+                </div>
             </div>
         </div>
     )

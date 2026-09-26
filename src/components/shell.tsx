@@ -13,7 +13,7 @@ import { InitLastHeard } from "./init-last-heard-song"
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<HeaderState>(HeaderState.HOME)
-  const [show, setShow] = useState<boolean>(true)
+  const [show, setShow] = useState<boolean>(false)
   const [sheetState, setSheetState] = useState<boolean>(false)
   const [openControls, setOpenControls] = useState<boolean>(false)
 
