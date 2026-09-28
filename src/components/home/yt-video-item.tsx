@@ -24,7 +24,7 @@ export function YoutubeItem({item}: Props) {
         <div className="flex justify-between p-4">
             <div className="flex items-center space-x-2 w-[70%] max-w-[70%]">
                 {item.snippet.thumbnails.high?.url && (
-                    <img className="size-12 rounded-lg overflow-hidden" src={item.snippet.thumbnails.high?.url} alt="" />
+                    <img className="size-12 object-cover rounded-lg overflow-hidden" src={item.snippet.thumbnails.high?.url} alt="" />
                 )}
                 {item.snippet.title && (
                     <h1 className="truncate max-w-[90%]">{item.snippet.title}</h1>

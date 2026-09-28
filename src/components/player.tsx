@@ -103,58 +103,71 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
     }, [currentSong])
 
     useEffect(() => {
-        if ('mediaSession' in navigator) {
-            if (currentSong) {
-            try {
-                navigator.mediaSession.metadata = new MediaMetadata({
+        if (!('mediaSession' in navigator)) return;
+
+        if (!currentSong) {
+            navigator.mediaSession.metadata = null;
+            return;
+        }
+
+        try {
+            navigator.mediaSession.metadata = new MediaMetadata({
                 title: currentSong.title || '',
                 artist: currentSong.artist || '',
                 artwork: currentSong.img_url
                     ? [
                         {
-                        src: currentSong.img_url,
-                        sizes: '512x512',
-                        type: 'image/png',
+                            src: currentSong.img_url,
+                            sizes: '512x512',
+                            type: 'image/png',
                         },
                     ]
                     : [],
-                });
-            } catch (error) {
-                console.warn('MediaSession metadata error:', error);
-            }
-
-            try {
-                navigator.mediaSession.setActionHandler('play', () => {
-                    play();
-                });
-                navigator.mediaSession.setActionHandler('pause', () => {
-                    pause();
-                });
-                navigator.mediaSession.setActionHandler('nexttrack', () => {
-                    nextSong();
-                });
-                navigator.mediaSession.setActionHandler('previoustrack', () => {
-                    previousSong()
-                });
-                // navigator.mediaSession.setActionHandler('seekbackward', ()=> {
-                //     previousSong()
-                // })
-                // navigator.mediaSession.setActionHandler('seekforward', ()=> {
-                //     nextSong() 
-                // })
-            } catch (error) {
-                console.warn('MediaSession action handler error:', error);
-            }
-            } else {
-                // Clear metadata and handlers when no song is selected
-                navigator.mediaSession.metadata = null;
-                navigator.mediaSession.setActionHandler('play', null);
-                navigator.mediaSession.setActionHandler('pause', null);
-                navigator.mediaSession.setActionHandler('nexttrack', null);
-                navigator.mediaSession.setActionHandler('previoustrack', null);
-            }
+            });
+        } catch (error) {
+            console.warn('MediaSession metadata error:', error);
         }
-    }, [currentSong, play, pause, nextSong, previousSong]);
+    }, [currentSong]);
+
+    useEffect(() => {
+        if (!('mediaSession' in navigator)) return;
+
+        try {
+            navigator.mediaSession.setActionHandler('play', play);
+            navigator.mediaSession.setActionHandler('pause', pause);
+            navigator.mediaSession.setActionHandler('nexttrack', nextSong);
+            navigator.mediaSession.setActionHandler('previoustrack', previousSong);
+
+            // navigator.mediaSession.setActionHandler('seekbackward', () => {
+            //     if(audioRef && audioRef.current) {
+            //         audioRef.current.currentTime = Math.max(
+            //             0,
+            //             audioRef.current.currentTime - 10
+            //         );
+            //     }
+            // });
+
+            // navigator.mediaSession.setActionHandler('seekforward', () => {
+            //     if(audioRef && audioRef.current) {
+            //         audioRef.current.currentTime = Math.min(
+            //             audioRef.current.duration,
+            //             audioRef.current.currentTime + 10
+            //         );
+            //     }
+            // });
+        } catch (error) {
+            console.warn('MediaSession action handler error:', error);
+        }
+
+        return () => {
+            navigator.mediaSession.setActionHandler('play', null);
+            navigator.mediaSession.setActionHandler('pause', null);
+            navigator.mediaSession.setActionHandler('nexttrack', null);
+            navigator.mediaSession.setActionHandler('previoustrack', null);
+            // navigator.mediaSession.setActionHandler('seekbackward', null);
+            // navigator.mediaSession.setActionHandler('seekforward', null);
+        };
+    }, [play, pause, nextSong, previousSong]);
 
     return (
         <div className="flex flex-col w-screen h-full overflow-hidden">
@@ -195,7 +208,7 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         />
                     </div>
                 )}
-                <div className="flex md:hidden w-full items-center justify-center bg-secondary-foreground pt-4 space-x-4" onClick={(e) => {
+                <div className={`${open ? "flex" : "hidden"} md:hidden w-full items-center justify-center bg-secondary-foreground pt-4 space-x-4`} onClick={(e) => {
                     e.stopPropagation()
                 }}>
                     <Button
@@ -293,31 +306,40 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                             <p>{formatTime(currentSong?.duration)}</p>
                         </div>
                     </div>
-                    <div className="flex items-center space-x-4">
-                        {currentSong?.img_url ? (
-                            <img
-                                className="size-16 object-cover text-primary rounded"
-                                src={currentSong?.img_url}
-                                alt={currentSong?.title || "Song image"}
-                            />  
-                        ) : (
-                            <AudioLines className="w-16 h-16 text-primary"/>
-                        )}
+                    <div className="flex items-center justify-between md:justify-center space-x-4 w-screen">
+                        <div className="flex items-center space-x-4">
+                            {currentSong?.img_url ? (
+                                <img
+                                    className="size-16 object-cover text-primary rounded"
+                                    src={currentSong?.img_url}
+                                    alt={currentSong?.title || "Song image"}
+                                />  
+                            ) : (
+                                <AudioLines className="w-16 h-16 text-primary"/>
+                            )}
 
-                        <div className="flex flex-col text-lg text-primary font-semibold">
-                            <p className="truncate max-w-62.5 md:max-w-50 lg:max-w-100 xl:max-w-175 2xl:max-w-full">{currentSong ? `${currentSong.title}` : 'No song selected'}</p>
-                            <p className="truncate text-sm text-muted-foreground max-w-62.5 md:max-w-50 lg:max-w-100 xl:max-w-175">{currentSong?.artist}</p>
+                            <div className="flex flex-col text-lg text-primary font-semibold">
+                                <p className="truncate max-w-62.5 md:max-w-50 lg:max-w-100 xl:max-w-175 2xl:max-w-full">{currentSong ? `${currentSong.title}` : 'No song selected'}</p>
+                                <p className="truncate text-sm text-muted-foreground max-w-62.5 md:max-w-50 lg:max-w-100 xl:max-w-175">{currentSong?.artist}</p>
+                            </div>
+                        </div>
+                        <div className={`${open ? "hidden" : "block"} md:hidden`}>
+                            <Button
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    if(isPlaying) {
+                                        pause()
+                                    } else {
+                                        play()
+                                    }
+                                }}
+                                variant={'secondary'}
+                                className="size-12 px-4 py-2 bg-primary"
+                            >
+                                {isPlaying ? <Pause/> : <Play/>}
+                            </Button>
                         </div>
                     </div>
-                    {/* <div className="flex md:hidden">
-                        <Button
-                            onClick={isPlaying ? pause : play}
-                            variant={'secondary'}
-                            className="px-4 py-2 bg-primary"
-                        >
-                            {isPlaying ? <Pause/> : <Play/>}
-                        </Button>
-                    </div> */}
 
                     <div className="hidden md:flex gap-4" onClick={(e) =>{
                         e.stopPropagation()
@@ -368,6 +390,7 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         {/* <OpenCurrentSongSheet open={open} setOpen={setOpen} audioRef={audioRef}/> */}
                     </div>
                 </div>
+                
             </div>
 
             {currentSong?.local_url && (
