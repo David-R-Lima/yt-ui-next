@@ -2,7 +2,7 @@
 
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import useControls from "../store/song-control-store"
-import { ArrowDownIcon, ArrowLeftFromLine, ArrowRightToLine, ArrowUpIcon, AudioLines, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
+import { ArrowDownIcon, ArrowLeftFromLine, ArrowRightToLine, ArrowUpIcon, AudioLines, Check, Download, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
 import { Button } from "./ui/button"
 import { AddSongToHistory } from "../services/history"
 import { NextSongsSheet } from "./next-songs-sheet"
@@ -13,6 +13,9 @@ import { DivButton } from "./ui/div-but-button"
 import { HandleEvents } from "./handle-events"
 import { UpdateNowListening } from "../services/now-listening"
 import { formatTime } from "@/lib/formatTime"
+import { offlineDB } from "@/lib/offlineDb"
+import { toast } from "sonner"
+import { DownloadSongOffline, GetOfflineSong } from "@/services/offline"
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL
 const token = process.env.NEXT_PUBLIC_TOKEN
@@ -21,6 +24,8 @@ const token = process.env.NEXT_PUBLIC_TOKEN
 
 export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetStateAction<boolean>>}) {
     const [addedToHistory, setAddedToHistory] = useState(false)
+    const [audioSrc, setAudioSrc] = useState<string | undefined>()
+    const [isDownloaded, setIsDownloaded] = useState(false)
 
     const {
         currentSong,
@@ -42,21 +47,71 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
 
     const audioRef = useRef<HTMLAudioElement | null>(null)
 
+    useEffect(() => {
+        async function checkOfflineSong() {
+            if(currentSong) {
+                const song = await GetOfflineSong(currentSong.id)
+
+                setIsDownloaded(!!song)
+            }
+        }
+
+        checkOfflineSong()
+    }, [currentSong])
+
+    useEffect(() => {
+        if(!currentSong) {
+            return
+        }
+
+        let objectUrl: string | undefined
+
+        async function loadAudio() {
+            if(!currentSong) {
+                toast.error("Current song is undefined!")
+                return
+            }
+
+            const offlineSong = await offlineDB.songs.get(currentSong.id)
+
+            if (offlineSong) {
+                objectUrl = URL.createObjectURL(offlineSong.audio)
+                setAudioSrc(objectUrl)
+            } else {
+                if(baseUrl) {
+                    setAudioSrc(
+                        baseUrl +
+                        currentSong?.local_url +
+                        "?token=" +
+                        token
+                    )
+                }
+            }
+        }
+
+        loadAudio()
+
+        return () => {
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl)
+            }
+        }
+    }, [currentSong])
+
     // Play/pause effect based on state
     useEffect(() => {
         const audio = audioRef.current
 
-        if (!audio) return
+        if (!audio || !audioSrc) return
 
         audio.volume = volume
 
         if (isPlaying) {
-            // audio.load()
             audio.play().catch(console.error)
         } else {
             audio.pause()
         }
-    }, [isPlaying, currentSong])
+    }, [isPlaying, audioSrc])
 
     //updatte volume
     useEffect(() => {
@@ -71,14 +126,15 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
         if (!audio) return
 
         const updateTime = () => {
-            setCurrentTime(audio.currentTime);
-        };
-
-        audio.addEventListener('timeupdate', updateTime)
-        return () => {
-            audio.removeEventListener('timeupdate', updateTime)
+            setCurrentTime(audio.currentTime)
         }
-    }, [currentSong, currentTime])
+
+        audio.addEventListener("timeupdate", updateTime)
+
+        return () => {
+            audio.removeEventListener("timeupdate", updateTime)
+        }
+    }, [currentSong])
 
     //add to history after 10 seconds
     useEffect(() => {
@@ -258,6 +314,23 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                     >
                         <Shuffle size={20} />
                     </Button>
+                    {isDownloaded ? (
+                        <Button disabled>
+                            <Check />
+                            <p className="hidden lg:block">Downloaded</p>
+                        </Button>
+                    ) : (
+                        <Button onClick={() => {
+                            if(currentSong) {
+                                DownloadSongOffline(currentSong)
+
+                                setIsDownloaded(true)
+                            }
+                        }}>
+                            <Download />
+                            <p className="hidden lg:block">Download</p>
+                        </Button>
+                    )}
                 </div>
                 <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2" onClick={() => {
                     if(open) {
@@ -371,6 +444,23 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         >
                             <Shuffle size={20} />
                         </Button>
+                        {isDownloaded ? (
+                            <Button disabled>
+                                <Check />
+                                <p className="hidden lg:block">Downloaded</p>
+                            </Button>
+                        ) : (
+                            <Button onClick={() => {
+                                if(currentSong) {
+                                    DownloadSongOffline(currentSong)
+
+                                    setIsDownloaded(true)
+                                }
+                            }}>
+                                <Download />
+                                <p className="hidden lg:block">Download</p>
+                            </Button>
+                        )}
                         {open ? (
                             <Button onClick={(e) => {
                                 e.stopPropagation()
@@ -396,7 +486,7 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
             {currentSong?.local_url && (
                 <audio
                     ref={audioRef}
-                    src={baseUrl + currentSong.local_url + "?token=" + token}
+                    src={audioSrc}
                     preload="auto"
                     onEnded={() => {
                         if (repeat && currentSong) {

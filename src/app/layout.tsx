@@ -4,6 +4,8 @@ import "./globals.css";
 import { ReactQueryProvider } from "@//components/providers/react-query-provider";
 import { ThemeProvider } from "@//components/providers/theme-provider";
 import { PlayerTitle } from "@/components/playerTitle";
+import { OfflineRouteGuard } from "@/guard/offline-guard";
+import { ServiceWorkerRegister } from "@/components/service-worker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +31,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <ThemeProvider defaultTheme="dark">
         <body className="min-h-full flex flex-col">
           <ReactQueryProvider>
+              <ServiceWorkerRegister />
               <PlayerTitle></PlayerTitle>
+              <OfflineRouteGuard />
               {children}
           </ReactQueryProvider>
         </body>

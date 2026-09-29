@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
   output: "standalone",
 };
 
-module.exports = {
-  allowedDevOrigins: ['100.106.102.84'],
-}
+// module.exports = {
+//   allowedDevOrigins: ['192.168.1.65'], // ['100.106.102.84'],
+// }
 
 export default nextConfig;

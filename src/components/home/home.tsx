@@ -15,7 +15,7 @@ export function Home() {
 
     const historyQuery = useQuery({
         queryKey: ["quick-select"],
-        queryFn: GetQuickSelect
+        queryFn: GetQuickSelect,
     })
 
     const recommendedQuery = useQuery({

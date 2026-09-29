@@ -17,6 +17,7 @@ export function QuickSelectItem({item}: Props) {
             <div className="w-full flex flex-col space-y-2 items-center">
                 <div className="w-full hover:opacity-50" onClick={() => {
                     if(item.song) {
+                        
                         setCurrentSong(item.song)
                     }
                 }}>

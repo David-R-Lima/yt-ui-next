@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, ChevronDown, ChevronUp, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, ChevronDown, ChevronUp, Download, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import UseControls from "@//store/song-control-store";
