@@ -49,7 +49,7 @@ export function Home() {
     );
 
     return (
-        <div className="flex flex-col space-y-4 pb-6 w-screen md:w-full h-full p-2 md:p-8 overflow-x-hidden"> 
+        <div className="flex flex-col md:space-y-4 w-screen md:w-full h-full p-2 md:p-8 overflow-x-hidden"> 
             <div className="space-y-4 px-4 rounded-lg">
                 <h1 className="text-xl">Recent</h1>
                 <Carousel setApi={setQuickSelectApi} opts={
