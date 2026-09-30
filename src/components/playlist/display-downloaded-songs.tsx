@@ -32,7 +32,7 @@ export function DisplayDownloaded() {
         queryFn: ({ pageParam }) => 
             GetOfflineSongs({
                 page: pageParam,
-                limit: 1,
+                limit: 5,
             }),
             getNextPageParam: (lastPage) => {
                 const { page, totalPages } = lastPage.meta
