@@ -392,8 +392,8 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                             )}
 
                             <div className="flex flex-col text-lg text-primary font-semibold">
-                                <p className="truncate max-w-62.5 md:max-w-50 lg:max-w-100 xl:max-w-175 2xl:max-w-full">{currentSong ? `${currentSong.title}` : 'No song selected'}</p>
-                                <p className="truncate text-sm text-muted-foreground max-w-62.5 md:max-w-50 lg:max-w-100 xl:max-w-175">{currentSong?.artist}</p>
+                                <p className="truncate max-w-55 md:max-w-50 lg:max-w-100 xl:max-w-175 2xl:max-w-full">{currentSong ? `${currentSong.title}` : 'No song selected'}</p>
+                                <p className="truncate text-sm text-muted-foreground max-w-55 md:max-w-50 lg:max-w-100 xl:max-w-175">{currentSong?.artist}</p>
                             </div>
                         </div>
                         <div className={`${open ? "hidden" : "block"} md:hidden`}>

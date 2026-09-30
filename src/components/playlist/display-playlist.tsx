@@ -1,7 +1,7 @@
 import { GetPlaylist } from "../../services/playlist"
 import UseControls from "@//store/song-control-store"
 import { useInfiniteQuery } from "@tanstack/react-query"
-import { Disc3, FunnelIcon, RefreshCcw } from "lucide-react"
+import { Disc3, FunnelIcon, Loader2, RefreshCcw } from "lucide-react"
 import { SongItem } from "../song-item"
 import { Source } from "../../services/enums/source"
 import { useEffect, useRef, useState } from "react"
@@ -185,7 +185,11 @@ export function DisplayPlaylist({ playlistId }: Props) {
                 ) : (
                     <li className="text-gray-500">No songs found in this playlist.</li>
                 )}
-                  <div ref={observerRef}></div>
+                  <div ref={observerRef} className="flex item-center justify-center bg-secondary-foreground m-2 p-2 mt-4 rounded-lg hover:cursor-pointer w-full bg-gray" onClick={() => {
+                    fetchNextPage()
+                  }}>
+                    {isPending ? (<Loader2 size="8" className="animate-spin" />) : ( <p>Load more</p>)}
+                  </div>
               </div>
             </div>
         </div>

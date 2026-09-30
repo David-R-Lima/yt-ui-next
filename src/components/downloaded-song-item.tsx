@@ -14,6 +14,7 @@ import { AddSongToPlaylist, RemoveSongFromPlaylist } from "../services/playlist"
 import { HardDelete } from "../services/enums/hardDelete";
 import { Checkbox } from "./ui/checkbox";
 import { DeleteOfflineSong } from "@/services/offline";
+import Link from "next/link";
 
 interface Props {
     song: Song
@@ -49,8 +50,36 @@ export function OfflineSongItem({ song, onClick }: Props) {
                 {song.img_url && (
                     <img className="size-10 object-cover" src={song.img_url} alt="" />
                 )}
-                <p className={`truncate max-w-25 md:max-w-75 lg:max-w-87.5 xl:max-w-full ${currentSong?.id === song.id && isPlaying ? "text-primary animate-pulse" : ""}`}>{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
+                <div>
+                    <p className={`truncate max-w-50 md:max-w-75 lg:max-w-87.5 xl:max-w-full ${currentSong?.id === song.id && isPlaying ? "text-primary animate-pulse" : ""}`}>{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
+                    {song?.artist && (() => {
+                        const artists = [
+                            ...new Set(
+                                song.artist
+                                    .split(",")
+                                    .map((artist) => artist.trim())
+                                    .filter(Boolean)
+                            ),
+                        ];
 
+                        return (
+                            <div className="flex items-center gap-1 truncate max-w-50 md:max-w-75 lg:max-w-87.5 xl:max-w-full text-sm text-muted-foreground">
+                                {artists.map((artist, i) => (
+                                    <Link
+                                        key={artist}
+                                        href={`/home/artist/${encodeURIComponent(artist)}`}
+                                        className="hover:text-primary hover:underline"
+                                    >
+                                        {artist}
+                                        {i < artists.length - 1 && ","}
+                                    </Link>
+                                ))}
+                            </div>
+                        );
+                    })()}
+                </div>    
+            </div>
+            <div className="flex items-center justify-center space-x-4">
                 {
                     song.duration && (
                         <p>
@@ -59,8 +88,6 @@ export function OfflineSongItem({ song, onClick }: Props) {
                         </p>
                     )
                 }
-            </div>
-            <div className="flex items-center justify-center space-x-4">
                 <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                     <PopoverTrigger className="hover:cursor-pointer">
                         <EllipsisVertical />

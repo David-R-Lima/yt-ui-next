@@ -1,4 +1,4 @@
-import { AudioLines, FunnelIcon, RefreshCcw } from "lucide-react"
+import { AudioLines, FunnelIcon, Loader2, RefreshCcw } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { SongItem } from "../song-item"
 import { Playlist } from "../../services/playlist/types"
@@ -166,7 +166,11 @@ export function DisplayAllSongs() {
                   ) : (
                       <li className="text-gray-500">No songs found in this playlist.</li>
                   )}
-                  <div ref={observerRef}></div>
+                  <div ref={observerRef} className="flex item-center justify-center bg-secondary-foreground m-2 p-2 mt-4 rounded-lg hover:cursor-pointer w-full bg-gray" onClick={() => {
+                    infiniteQuery.fetchNextPage()
+                  }}>
+                    {infiniteQuery.isPending ? (<Loader2 size="8" className="animate-spin" />) : ( <p>Load more</p>)}
+                  </div>
               </div>
             </div>
         </div>

@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { AddSongToPlaylist, RemoveSongFromPlaylist } from "../services/playlist";
 import { HardDelete } from "../services/enums/hardDelete";
 import { Checkbox } from "./ui/checkbox";
+import Link from "next/link";
 
 interface Props {
     song: Song
@@ -94,16 +95,34 @@ export function SongItem({ song, onClick, playlistId }: Props) {
                 {song.img_url && (
                     <img className="size-10 object-cover" src={song.img_url} alt="" />
                 )}
-                <p className={`truncate max-w-25 md:max-w-75 lg:max-w-87.5 xl:max-w-full ${currentSong?.id === song.id && isPlaying ? "text-primary animate-pulse" : ""}`}>{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
+                <div>
+                    <p className={`truncate max-w-30 md:max-w-75 lg:max-w-87.5 xl:max-w-full ${currentSong?.id === song.id && isPlaying ? "text-primary animate-pulse" : ""}`}>{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
+                    {song?.artist && (() => {
+                        const artists = [
+                            ...new Set(
+                                song.artist
+                                    .split(",")
+                                    .map((artist) => artist.trim())
+                                    .filter(Boolean)
+                            ),
+                        ];
 
-                {
-                    song.duration && (
-                        <p>
-                            {Math.floor(song.duration / 60)}:
-                            {(song.duration % 60).toString().padStart(2, '0')}
-                        </p>
-                    )
-                }
+                        return (
+                            <div className="flex items-center gap-1 truncate max-w-30 md:max-w-75 lg:max-w-87.5 xl:max-w-full text-sm text-muted-foreground">
+                                {artists.map((artist, i) => (
+                                    <Link
+                                        key={artist}
+                                        href={`/home/artist/${encodeURIComponent(artist)}`}
+                                        className="hover:text-primary hover:underline"
+                                    >
+                                        {artist}
+                                        {i < artists.length - 1 && ","}
+                                    </Link>
+                                ))}
+                            </div>
+                        );
+                    })()}
+                </div>
                 {
                     !song.local_url && song.youtube_url && !downloadSongMutation.isPending && (
                         <Download className="hover:animate-pulse text-primary" onClick={() => {
@@ -120,6 +139,14 @@ export function SongItem({ song, onClick, playlistId }: Props) {
                 }
             </div>
             <div className="flex items-center justify-center space-x-4">
+                {
+                    song.duration && (
+                        <p>
+                            {Math.floor(song.duration / 60)}:
+                            {(song.duration % 60).toString().padStart(2, '0')}
+                        </p>
+                    )
+                }
                 <DropdownMenu>
                     <DropdownMenuTrigger className="hover:cursor-pointer">                
                         <Plus />

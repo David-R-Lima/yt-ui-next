@@ -14,6 +14,7 @@ import { GetSongs } from "../services/songs"
 import { useEffect, useRef, useState } from "react"
 import UseControls from "@/store/song-control-store"
 import { Song } from "@/services/songs/types"
+import { GetOfflineSongs } from "@/services/offline"
 
 interface SearchResultsProps {
   songs: Song[]
@@ -88,15 +89,27 @@ export function SearchComboBox() {
 
   const observerRef = useRef<HTMLDivElement | null>(null)
 
+  const isOnline = navigator.onLine
+
+  console.log(isOnline)
+
   const {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ["search", textFilter],
+    queryKey: ["search", textFilter, isOnline ? "online" : "offline"],
 
     queryFn: async ({ pageParam }) => {
+      if (!isOnline) {
+        return GetOfflineSongs({
+          text: textFilter,
+          page: pageParam,
+          limit: 10,
+        })
+      }
+
       return GetSongs({
         text: textFilter,
         page: pageParam,

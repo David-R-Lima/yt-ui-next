@@ -2,6 +2,7 @@ import { offlineDB } from "@/lib/offlineDb"
 import { Song } from "@/services/songs/types"
 import { getSongsProps } from "../songs"
 import { OrderBy } from "../enums/order-by"
+import { IPaginationResponse } from "../pagination"
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL
 const token = process.env.NEXT_PUBLIC_TOKEN
@@ -22,15 +23,15 @@ export async function DownloadSongOffline(song: Song) {
     const audio = await response.blob()
 
     if (song.img_url) {
-        // try {
-        //     const imageResponse = await fetch(song.img_url)
+        try {
+            const imageResponse = await fetch(song.img_url)
 
-        //     if (imageResponse.ok) {
-        //         image = await imageResponse.blob()
-        //     }
-        // } catch (error) {
-        //     console.log(error)
-        // }
+            if (imageResponse?.ok) {
+                image = await imageResponse.blob()
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const offlineSong = {
@@ -44,8 +45,6 @@ export async function DownloadSongOffline(song: Song) {
         image,
         downloadedAt: Date.now(),
     }
-
-    console.log(offlineSong)
 
     await offlineDB.songs.put(offlineSong)
 
@@ -65,7 +64,8 @@ export async function GetOfflineSongs({
 }: getSongsProps) {
     let songs = await offlineDB.songs.toArray()
 
-    // Search
+    const totalSongs = songs.length
+
     if (text) {
         const search = text.toLowerCase()
 
@@ -88,7 +88,9 @@ export async function GetOfflineSongs({
             limit,
             total,
             totalPages: Math.ceil(total / limit),
-        },
+            items: songs.length,
+            totalItems: totalSongs
+        } as IPaginationResponse,
     }
 }
 

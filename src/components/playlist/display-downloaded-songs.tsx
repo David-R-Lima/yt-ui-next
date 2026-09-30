@@ -27,7 +27,7 @@ export function DisplayDownloaded() {
     const [order, setOrder] = useState<OrderBy>(orderBy)
     const [resetFilters, setResetFilters] = useState(false)
 
-    const { data, isPending, refetch, hasNextPage, fetchNextPage} = useInfiniteQuery({
+    const { data, isPending, isFetching, refetch, hasNextPage, fetchNextPage} = useInfiniteQuery({
         queryKey: ["offline-songs"],
         queryFn: ({ pageParam }) => 
             GetOfflineSongs({
@@ -37,7 +37,11 @@ export function DisplayDownloaded() {
             getNextPageParam: (lastPage) => {
                 const { page, totalPages } = lastPage.meta
 
-                return page < totalPages ? page + 1 : undefined
+                if(totalPages) {
+                  return page < totalPages ? page + 1 : undefined
+                }
+                
+                return page
             },
             initialPageParam: 1,
             select: (data) => {
@@ -94,9 +98,10 @@ export function DisplayDownloaded() {
         <div className="flex flex-col w-full h-full overflow-y-auto">
             <div className="sticky top-0 z-20 bg-background flex items-center min-w-full rounded-t-xl px-4">              
               <div className="px-4 py-2">
-                <RefreshCcw className="hover:cursor-pointer" onClick={() => {
-                  refetch()
-                }}/>
+              <RefreshCcw
+                className={`cursor-pointer ${isFetching ? 'animate-spin' : ''}`}
+                onClick={() => refetch()}
+              />
               </div>
               <div className="flex items-center space-x-2">
                 <Dialog>

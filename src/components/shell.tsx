@@ -46,6 +46,7 @@ return (
           <div className="md:hidden shrink-0 px-4">
             <Sheet open={sheetState} onOpenChange={() => {
               setSheetState(!sheetState)
+              setShow(true)
             }}>
               <SheetTrigger asChild>
                 <button className="p-2 rounded-lg hover:bg-gray-800">
