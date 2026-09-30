@@ -53,6 +53,16 @@ const UseControls = create<ControlsState>((set, get) => ({
   setCurrentSong: async (song) => {
     const { shuffle, source, sourceId, orderBy } = get()
 
+    if (!navigator.onLine) {
+      set({
+        currentSong: song,
+        playlist: [song],
+        currentIndex: 0,
+      })
+
+      return
+    }
+
     const fetchedSongs = await GetNextSongs({
       source,
       sourceId,

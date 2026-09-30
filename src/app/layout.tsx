@@ -6,6 +6,7 @@ import { ThemeProvider } from "@//components/providers/theme-provider";
 import { PlayerTitle } from "@/components/playerTitle";
 import { OfflineRouteGuard } from "@/guard/offline-guard";
 import { ServiceWorkerRegister } from "@/components/service-worker";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <ServiceWorkerRegister />
               <PlayerTitle></PlayerTitle>
               <OfflineRouteGuard />
+              <Toaster position="top-right" />
               {children}
           </ReactQueryProvider>
         </body>
