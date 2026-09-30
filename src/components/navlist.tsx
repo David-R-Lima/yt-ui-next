@@ -1,6 +1,6 @@
 'use client'
 
-import { Home, ListEnd, Download } from "lucide-react";
+import { Home, ListEnd, Download, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 
@@ -53,6 +53,16 @@ export function NavList({show, setSheetState, setOpenControls}: {show: boolean, 
                     <Download className="text-primary hover:cursor-pointer"/>
                     {show && (
                         <p>Downloads</p>
+                    )}
+                </div>
+                <div className="flex items-center space-x-2 hover:cursor-pointer hover:bg-gray-800 p-2 rounded-lg" onClick={() => {
+                    setOpenControls(false)
+                    if(setSheetState) setSheetState(false)
+                    router.push("/home/settings")
+                }}>
+                    <Settings className="text-primary hover:cursor-pointer"/>
+                    {show && (
+                        <p>Settings</p>
                     )}
                 </div>
             </div>

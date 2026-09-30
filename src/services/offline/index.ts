@@ -99,3 +99,14 @@ export async function DeleteOfflineSong({song_id}: {
 }) {
 
 }
+
+export async function GetTotalSize() {
+    const songs = await offlineDB.songs.toArray()
+
+    const audioStorage = songs.reduce(
+        (total, song) => total + (song.audio?.size ?? 0),
+        0
+    )
+
+    return audioStorage
+}
