@@ -34,7 +34,7 @@ function SearchResults({
   }
 
   return (
-    <CommandList>
+    <CommandList className="bg-primary/10">
       <CommandGroup>
         {songs.map((song, index) => {
           const isLast = index === songs.length - 1
@@ -91,8 +91,6 @@ export function SearchComboBox() {
 
   const isOnline = navigator.onLine
 
-  console.log(isOnline)
-
   const {
     data,
     fetchNextPage,
@@ -127,7 +125,8 @@ export function SearchComboBox() {
     },
 
     select: (data) => {
-      const songs = data.pages.flatMap((page) => page.songs)
+      // TODO: check here later because i might need this to return image blob and Song doesnt have that
+      const songs = data.pages.flatMap((page) => page.songs as Song[])
 
       return {
         songs,
@@ -191,6 +190,7 @@ export function SearchComboBox() {
             value={textFilter}
             onValueChange={setText}
             placeholder="Search..."
+            className=""
           />
 
           {textFilter && (

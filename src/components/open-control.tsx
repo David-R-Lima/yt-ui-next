@@ -1,14 +1,45 @@
 'use client'
 
 import { formatTime } from "@/lib/formatTime"
+import { DownloadSongOffline, GetOfflineSong } from "@/services/offline"
 import UseControls from "@/store/song-control-store"
-import { AudioLines } from "lucide-react"
+import { AudioLines, Check, Download, Heart } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Button } from "./ui/button"
+import { UpdateSong } from "@/services/songs"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { Liked } from "@/services/enums/liked"
 
 export function OpenControls() {
     const { currentSong, playlist, setCurrentSong } = UseControls()
+    const [isDownloaded, setIsDownloaded] = useState(false)
+
+    useEffect(() => {
+        async function checkOfflineSong() {
+            if(currentSong) {
+                const song = await GetOfflineSong(currentSong.id)
+
+                setIsDownloaded(!!song)
+            }
+        }
+
+        checkOfflineSong()
+    }, [currentSong])
+
+    const updateSongMutation = useMutation({
+        mutationFn: UpdateSong,
+        onSuccess: () => {
+            toast.success("Liked song")
+        },
+        onError: () => {
+            toast.error("Something went wrong!")
+        }
+    })
+
     return (
         <div className="flex flex-col md:grid md:grid-cols-[minmax(0,1fr)_50%] lg:grid-cols-[minmax(0,1fr)_35%] w-full h-full">
-            <div className="flex items-center justify-center min-w-0 p-2">
+            <div className="flex flex gap-4 items-center justify-center min-w-0 p-2">
                 {currentSong?.img_url ? (
                     <img
                         className="size-36 md:size-48 lg:size-86 object-cover rounded"
@@ -18,6 +49,48 @@ export function OpenControls() {
                 ) : (
                     <AudioLines className="w-16 h-16 text-primary" />
                 )}
+                <div className="flex flex-col items-center gap-4">
+                    {isDownloaded ? (
+                        <Button disabled>
+                            <Check />
+                            {/* <p className="hidden lg:block">Downloaded</p> */}
+                        </Button>
+                    ) : (
+                        <Button onClick={() => {
+                            if(currentSong) {
+                                DownloadSongOffline(currentSong)
+
+                                setIsDownloaded(true)
+                            }
+                        }}>
+                            <Download />
+                            {/* <p className="hidden lg:block">Download</p> */}
+                        </Button>
+                    )}
+                    {
+                        currentSong && currentSong?.liked ? (
+                            <Heart className="fill-primary text-primary transition-colors hover:animate-pulse hover:cursor-pointer" onClick={() => {
+                                updateSongMutation.mutate({
+                                    song_id: currentSong.id,
+                                    liked: Liked.FALSE
+                                })
+    
+                                currentSong.liked = false
+                            }}/>
+                        ) : (
+                            <Heart className="transition-colors hover:animate-pulse hover:cursor-pointer" onClick={() => {
+                                if(currentSong) {
+                                    updateSongMutation.mutate({
+                                        song_id: currentSong.id,
+                                        liked: Liked.TRUE
+                                    })
+        
+                                    currentSong.liked = true
+                                }
+                            }}/>
+                        )
+                    }
+                </div>
             </div>
 
             <div className="w-full max-h-full overflow-x-hidden overflow-y-auto p-4">

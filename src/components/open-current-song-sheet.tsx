@@ -113,7 +113,7 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
                             <Button
                                 onClick={isPlaying ? pause : play}
                                 variant="secondary"
-                                className="px-4 py-2 bg-primary"
+                                className="px-4 py-2 bg-primary hover:bg-primary/50"
                             >
                             {isPlaying ? <Pause /> : <Play />}
                             </Button>
@@ -211,7 +211,7 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
                             <Button
                                 onClick={isPlaying ? pause : play}
                                 variant="secondary"
-                                className="px-4 py-2 bg-primary size-12"
+                                className="px-4 py-2 bg-primary size-12 hover:bg-primary/50"
                             >
                                 {isPlaying ? <Pause className="size-6"/> : <Play className="size-6" />}
                             </Button>

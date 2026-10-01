@@ -25,7 +25,6 @@ const token = process.env.NEXT_PUBLIC_TOKEN
 export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetStateAction<boolean>>}) {
     const [addedToHistory, setAddedToHistory] = useState(false)
     const [audioSrc, setAudioSrc] = useState<string | undefined>()
-    const [isDownloaded, setIsDownloaded] = useState(false)
 
     const {
         currentSong,
@@ -46,18 +45,6 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
     } = useControls()
 
     const audioRef = useRef<HTMLAudioElement | null>(null)
-
-    useEffect(() => {
-        async function checkOfflineSong() {
-            if(currentSong) {
-                const song = await GetOfflineSong(currentSong.id)
-
-                setIsDownloaded(!!song)
-            }
-        }
-
-        checkOfflineSong()
-    }, [currentSong])
 
     useEffect(() => {
         if(!currentSong) {
@@ -264,7 +251,7 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         />
                     </div>
                 )}
-                <div className={`${open ? "flex" : "hidden"} md:hidden w-full items-center justify-center bg-secondary-foreground pt-4 space-x-4`} onClick={(e) => {
+                <div className={`${open ? "flex" : "hidden"} md:hidden w-full items-center justify-center bg-primary/10 pt-4 space-x-4`} onClick={(e) => {
                     e.stopPropagation()
                 }}>
                     <Button
@@ -297,7 +284,7 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                             }
                         }}
                         variant={'secondary'}
-                        className="size-12 px-4 py-2 bg-primary"
+                        className="size-12 px-4 py-2 bg-primary hover:bg-primary/50"
                     >
                         {isPlaying ? <Pause/> : <Play/>}
                     </Button>
@@ -314,25 +301,8 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                     >
                         <Shuffle size={20} />
                     </Button>
-                    {isDownloaded ? (
-                        <Button disabled>
-                            <Check />
-                            <p className="hidden lg:block">Downloaded</p>
-                        </Button>
-                    ) : (
-                        <Button onClick={() => {
-                            if(currentSong) {
-                                DownloadSongOffline(currentSong)
-
-                                setIsDownloaded(true)
-                            }
-                        }}>
-                            <Download />
-                            <p className="hidden lg:block">Download</p>
-                        </Button>
-                    )}
                 </div>
-                <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2" onClick={() => {
+                <div className="p-4 bg-primary/10 text-white flex flex-row items-center justify-between gap-2" onClick={() => {
                     if(open) {
                         setOpen(false)
                     } else {
@@ -363,7 +333,7 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                                 }
                             }}
                             variant={'secondary'}
-                            className="px-4 py-2 bg-primary"
+                            className="px-4 py-2 bg-primary hover:bg-primary/50"
                         >
                             {isPlaying ? <Pause/> : <Play/>}
                         </Button>
@@ -407,7 +377,7 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                                     }
                                 }}
                                 variant={'secondary'}
-                                className="size-12 px-4 py-2 bg-primary"
+                                className="size-12 px-4 py-2 bg-primary hover:bg-primary/50"
                             >
                                 {isPlaying ? <Pause/> : <Play/>}
                             </Button>
@@ -444,23 +414,6 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                         >
                             <Shuffle size={20} />
                         </Button>
-                        {isDownloaded ? (
-                            <Button disabled>
-                                <Check />
-                                <p className="hidden lg:block">Downloaded</p>
-                            </Button>
-                        ) : (
-                            <Button onClick={() => {
-                                if(currentSong) {
-                                    DownloadSongOffline(currentSong)
-
-                                    setIsDownloaded(true)
-                                }
-                            }}>
-                                <Download />
-                                <p className="hidden lg:block">Download</p>
-                            </Button>
-                        )}
                         {open ? (
                             <Button onClick={(e) => {
                                 e.stopPropagation()
