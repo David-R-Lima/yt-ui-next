@@ -5,8 +5,6 @@ import useControls from "../store/song-control-store"
 import { ArrowDownIcon, ArrowLeftFromLine, ArrowRightToLine, ArrowUpIcon, AudioLines, Check, Download, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
 import { Button } from "./ui/button"
 import { AddSongToHistory } from "../services/history"
-import { NextSongsSheet } from "./next-songs-sheet"
-import { OpenCurrentSongSheet } from "./open-current-song-sheet"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Slider } from "./ui/slider"
 import { DivButton } from "./ui/div-but-button"
@@ -15,12 +13,9 @@ import { UpdateNowListening } from "../services/now-listening"
 import { formatTime } from "@/lib/formatTime"
 import { offlineDB } from "@/lib/offlineDb"
 import { toast } from "sonner"
-import { DownloadSongOffline, GetOfflineSong } from "@/services/offline"
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL
 const token = process.env.NEXT_PUBLIC_TOKEN
-
-
 
 export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetStateAction<boolean>>}) {
     const [addedToHistory, setAddedToHistory] = useState(false)
@@ -429,8 +424,6 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                                 <ArrowUpIcon />
                             </Button>
                         )}
-
-                        {/* <OpenCurrentSongSheet open={open} setOpen={setOpen} audioRef={audioRef}/> */}
                     </div>
                 </div>
                 

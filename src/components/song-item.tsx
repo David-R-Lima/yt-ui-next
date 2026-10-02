@@ -108,7 +108,7 @@ export function SongItem({ song, onClick, playlistId }: Props) {
                         ];
 
                         return (
-                            <div className="flex items-center gap-1 truncate max-w-30 md:max-w-75 lg:max-w-87.5 xl:max-w-full text-sm text-muted-foreground">
+                            <div className="flex items-center gap-1 truncate max-w-30 md:max-w-75 lg:max-w-87.5 xl:max-w-250 text-sm text-muted-foreground">
                                 {artists.map((artist, i) => (
                                     <Link
                                         key={artist}

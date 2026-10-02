@@ -13,22 +13,20 @@ export function QuickSelectItem({item}: Props) {
     const isCurrent = currentSong === item.song && isPlaying
 
     return (
-        <div className="w-100 flex items-center hover:cursor-pointer">
+        <div className="w-100 flex items-center">
             <div className="w-full flex flex-col space-y-2 items-center">
-                <div className="w-full hover:opacity-50" onClick={() => {
-                    if(item.song) {
-                        
-                        setCurrentSong(item.song)
-                    }
-                }}>
-                    {item.song?.img_url && (
-                        <img className="size-36 md:size-42 rounded-lg object-cover overflow-hidden" src={item.song?.img_url} alt="" />
-                    )}
+                <div className="w-full">
+                    <img className="size-36 md:size-42 rounded-lg object-cover overflow-hidden hover:opacity-50 hover:cursor-pointer" src={item.song?.img_url} alt="" onClick={() => {
+                        if(item.song) {
+                            
+                            setCurrentSong(item.song)
+                        }
+                    }} />
                 </div>
                 <div className="w-full">
                     {item.song?.title && (
                         <h1
-                            className={`truncate hover:opacity-50 font-medium max-w-[35%] md:max-w-[50%] ${
+                            className={`truncate hover:cursor-pointer hover:opacity-50 font-medium max-w-[35%] md:max-w-[50%] ${
                                 isCurrent
                                     ? "animate-pulse text-primary"
                                     : ""

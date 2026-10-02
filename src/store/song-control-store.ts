@@ -22,7 +22,7 @@ interface ControlsState {
   setSource: (source: Source) => void
   setSourceId: (sourceeId: string) => void
   setCurrentSong: (song: Song) => void
-  setCurrentSongFromSideBar: (newIndex: number) => void
+  setCurrentSongFromNext: (newIndex: number) => void
   clearCurrentSong: () => void
   play: () => void
   pause: () => void
@@ -33,6 +33,7 @@ interface ControlsState {
   nextSong: () => void
   previousSong: () => void
   handleEndSong: () => void
+  fetchNextSongs: (id: string) => Promise<Song[]>
 }
 
 const UseControls = create<ControlsState>((set, get) => ({
@@ -51,7 +52,7 @@ const UseControls = create<ControlsState>((set, get) => ({
   orderBy: OrderBy.DESC,
   setOrderBy: (orderBy) => set({ orderBy }),
   setCurrentSong: async (song) => {
-    const { shuffle, source, sourceId, orderBy } = get()
+    const { fetchNextSongs } = get()
 
     if (!navigator.onLine) {
       set({
@@ -63,101 +64,49 @@ const UseControls = create<ControlsState>((set, get) => ({
       return
     }
 
-    const fetchedSongs = await GetNextSongs({
-      source,
-      sourceId,
-      random: shuffle ? Random.TRUE : Random.FALSE,
-      startId: song.id,
-    })
-
-    const fetchPreviousSongs = await GetNextSongs({
-      source,
-      sourceId,
-      random: shuffle ? Random.TRUE : Random.FALSE,
-      startId: song.id,
-      reverse: Reverse.TRUE,
-    })
-
-    switch (orderBy) {
-      case OrderBy.ASC: {
-        set({
-          currentSong: song,
-          playlist: [...fetchPreviousSongs, song, ...fetchedSongs],
-          currentIndex: fetchPreviousSongs.length,
-        })
-        break
-      }
-      case OrderBy.DESC: {
-        set({
-          currentSong: song,
-          playlist: [...fetchedSongs.reverse(), song, ...fetchPreviousSongs.reverse()],
-          currentIndex: fetchedSongs.length,
-        })
-        break
-      }
-    }
-  },
-  setCurrentSongFromSideBar: async (newIndex: number) => {
-    const { playlist, shuffle, source, sourceId, orderBy } = get()
-
-    const tempPlaylist = [...playlist]
-    const song = tempPlaylist[newIndex]
-
-    if (!song) return
-
-    const isAsc = orderBy === OrderBy.ASC
-
-    const isAtEnd = isAsc
-      ? tempPlaylist.slice(newIndex).length <= 1
-      : tempPlaylist.slice(0, newIndex + 1).length <= 1
-
-    const isAtStart = isAsc
-      ? tempPlaylist.slice(0, newIndex).length === 0
-      : tempPlaylist.slice(newIndex + 1).length === 0
-
-    if (isAtEnd) {
-      const fetchedSongs = await GetNextSongs({
-        source,
-        sourceId,
-        random: shuffle ? Random.TRUE : Random.FALSE,
-        startId: song.id,
-      })
-
-      set({
-        currentSong: song,
-        playlist: isAsc
-          ? [...tempPlaylist, ...fetchedSongs]
-          : [...fetchedSongs.reverse(), ...tempPlaylist],
-        currentIndex: isAsc ? newIndex : fetchedSongs.length + newIndex,
-      })
-
-      return
-    }
-
-    if (isAtStart) {
-      const fetchedSongs = await GetNextSongs({
-        source,
-        sourceId,
-        random: shuffle ? Random.TRUE : Random.FALSE,
-        startId: song.id,
-        reverse: Reverse.TRUE,
-      })
-
-      set({
-        currentSong: song,
-        playlist: isAsc
-          ? [...fetchedSongs, ...tempPlaylist]
-          : [...tempPlaylist, ...fetchedSongs.reverse()],
-        currentIndex: isAsc ? fetchedSongs.length : newIndex,
-      })
-
-      return
-    }
+    const fetchedSongs = await fetchNextSongs(song.id)
 
     set({
       currentSong: song,
-      currentIndex: newIndex,
+      playlist: [song, ...fetchedSongs],
+      currentIndex: 0,
     })
+  },
+  setCurrentSongFromNext: async (newIndex) => {
+    const {
+      playlist,
+      orderBy,
+      fetchNextSongs
+    } = get()
+
+    const song = playlist[newIndex]
+
+    if (!song) return
+
+    let fetchedSongs: Song[] = []
+
+    if(playlist.length - 1 === newIndex) {
+      fetchedSongs = await fetchNextSongs(song.id)
+    }
+
+    const newPlaylist = [
+      ...playlist,
+      ...fetchedSongs,
+    ]
+
+    if (orderBy === OrderBy.ASC) {
+      set({
+        playlist: newPlaylist,
+        currentSong: song,
+        currentIndex: fetchedSongs.length + newIndex,
+      })
+    } else {
+      set({
+        playlist: newPlaylist,
+        currentSong: song,
+        currentIndex: newIndex,
+      })
+    }
   },
   clearCurrentSong: () => set({ currentSong: undefined }),
   setSource: (source) => set({ source }),
@@ -172,46 +121,28 @@ const UseControls = create<ControlsState>((set, get) => ({
   setVolume: (value: number) => set({ volume: value }),
   setRepeat: () => set((state) => ({ repeat: !state.repeat })),
   setShuffle: async () => {
-    const { shuffle, source, sourceId, playlist, currentIndex } = get()
+    const { shuffle } = get()
 
     const newShuffleState = !shuffle
 
-    const fetchedSongs = await GetNextSongs({
-      random: newShuffleState ? Random.TRUE : undefined,
-      source,
-      sourceId,
-    })
-
-    const preserved = playlist.slice(0, currentIndex + 1)
-
     set({
       shuffle: newShuffleState,
-      playlist: [...preserved, ...fetchedSongs],
     })
   },
   nextSong: async () => {
-    const { playlist, currentIndex, source, sourceId, shuffle, orderBy } = get()
+    const { playlist, currentIndex, fetchNextSongs } = get()
 
     const newIndex = currentIndex + 1
 
     if (newIndex >= playlist.length - 1) {
       const tempStart = playlist[newIndex] ?? undefined
-      const fetchedSongs = await GetNextSongs({
-        source,
-        sourceId,
-        random: shuffle ? Random.TRUE : undefined,
-        startId: tempStart ? tempStart.id : undefined,
-        reverse: orderBy === OrderBy.ASC ? Reverse.FALSE : Reverse.TRUE,
-      })
+
+      const fetchedSongs = await fetchNextSongs(tempStart.id)
 
       if (fetchedSongs.length > 0) {
         let newPlaylist
 
-        if (orderBy === OrderBy.ASC) {
-          newPlaylist = [...playlist, ...fetchedSongs]
-        } else {
-          newPlaylist = [...playlist, ...fetchedSongs.reverse()]
-        }
+        newPlaylist = [...playlist, ...fetchedSongs]
 
         set({
           playlist: newPlaylist,
@@ -234,47 +165,43 @@ const UseControls = create<ControlsState>((set, get) => ({
     }
   },
   previousSong: async () => {
-    const { currentIndex, playlist, source, sourceId, orderBy } = get()
+    const { currentIndex, playlist } = get()
+
+    if(currentIndex === 0) {
+      return
+    }
 
     const newIndex = currentIndex - 1
 
-    let tempPlaylist = [...playlist]
-    const tempCurrentSong = tempPlaylist[newIndex]
+    set({
+      currentIndex: newIndex,
+      currentSong: playlist[newIndex],
+    })
 
-    if (newIndex <= 0) {
-      const fetchedSongs = await GetNextSongs({
-        source,
-        sourceId,
-        startId: tempCurrentSong?.id,
-        reverse: orderBy === OrderBy.ASC ? Reverse.TRUE : Reverse.FALSE,
-      })
-
-      if (orderBy === OrderBy.ASC) {
-        tempPlaylist = [...fetchedSongs, ...tempPlaylist]
-      } else {
-        tempPlaylist = [...fetchedSongs.reverse(), ...tempPlaylist]
-      }
-
-      set({
-        currentIndex: fetchedSongs.length,
-        currentSong: tempPlaylist[fetchedSongs.length],
-        playlist: tempPlaylist,
-      })
-
-      get().play()
-    } else {
-      set({
-        currentIndex: newIndex,
-        currentSong: tempPlaylist[newIndex],
-        playlist: tempPlaylist,
-      })
-
-      get().play()
-    }
+    get().play()
   },
   handleEndSong: () => {
     get().nextSong()
   },
+  fetchNextSongs: async (startId: string) => {
+    const { source, sourceId, shuffle, orderBy } = get()
+
+    const songs = await GetNextSongs({
+      source,
+      sourceId,
+      random: shuffle ? Random.TRUE : Random.FALSE,
+      startId,
+      reverse: orderBy === OrderBy.DESC
+        ? Reverse.TRUE
+        : Reverse.FALSE,
+    })
+
+    if(orderBy === OrderBy.DESC) {
+      return songs.reverse()
+    } else {
+      return songs
+    }
+  }
 }))
 
 export default UseControls

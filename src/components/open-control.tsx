@@ -12,7 +12,7 @@ import { toast } from "sonner"
 import { Liked } from "@/services/enums/liked"
 
 export function OpenControls() {
-    const { currentSong, playlist, setCurrentSong } = UseControls()
+    const { currentSong, playlist, setCurrentSongFromNext } = UseControls()
     const [isDownloaded, setIsDownloaded] = useState(false)
 
     useEffect(() => {
@@ -99,7 +99,7 @@ export function OpenControls() {
                         className="w-full flex justify-between items-center gap-4 mb-4 hover:cursor-pointer"
                         key={i}
                         onClick={() => {
-                            setCurrentSong(song)
+                            setCurrentSongFromNext(i)
                         }}
                     >
                         <div className="flex items-center space-x-2 min-w-0 flex-1">
@@ -114,9 +114,16 @@ export function OpenControls() {
                             )}
                             
                             <div className="flex-1 min-w-0">
-                                <p className="truncate font-medium text-white">
-                                    {song.title}
-                                </p>
+                                {currentSong?.id === song.id ? (
+                                    <p className="truncate font-medium animate-pulse text-primary">
+                                        {song.title}
+                                    </p>
+                                ) : (
+                                    <p className="truncate font-medium text-white">
+                                        {song.title}
+                                    </p>
+                                )}
+
                                 <p className="truncate text-sm text-muted-foreground">
                                     {song.artist}
                                 </p>

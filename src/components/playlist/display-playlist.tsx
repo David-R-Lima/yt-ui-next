@@ -17,7 +17,7 @@ interface Props {
 }
 export function DisplayPlaylist({ playlistId }: Props) {
 
-    const { setSource, setSourceId, setCurrentSong, orderBy } = UseControls()
+    const { setSource, setSourceId, setCurrentSong, orderBy, setOrderBy } = UseControls()
 
 
     const [text, setText] = useState<string | undefined>(undefined)
@@ -116,6 +116,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
                       <h1>Order by: </h1>
                       <Select value={order} defaultValue={orderBy} onValueChange={(e) => {
                         setOrder(e as OrderBy)
+                        setOrderBy(e as OrderBy)
                       }}>
                         <SelectTrigger className="w-45">
                           <SelectValue placeholder="Order by" />

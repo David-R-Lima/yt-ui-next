@@ -17,7 +17,7 @@ const allPlaylist: Playlist = { id: "all", name: "All Songs", playlist_songs: []
 
 export function DisplayLikedSongs() {
 
-    const { setSource, setCurrentSong, orderBy } = UseControls()
+    const { setSource, setCurrentSong, orderBy, setOrderBy } = UseControls()
 
     const [text, setText] = useState<string | undefined>(undefined)
     const [durationGte, setDurationGte] = useState<number | undefined>(undefined)
@@ -93,6 +93,7 @@ export function DisplayLikedSongs() {
                     <h1>Order by: </h1>
                     <Select value={order} defaultValue={orderBy} onValueChange={(e) => {
                       setOrder(e as OrderBy)
+                      setOrderBy(e as OrderBy)
                     }}>
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Order by" />
