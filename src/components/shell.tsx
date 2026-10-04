@@ -28,7 +28,7 @@ return (
     {/* Sidebar */}
       <aside className="hidden md:block row-start-1 col-start-1 overflow-hidden border-r-2 border-gray-800 p-2">
         <button
-          className="flex w-full p-2 rounded-lg hover:cursor-pointer hover:bg-gray-800"
+          className="flex items-center w-full p-2 rounded-lg hover:cursor-pointer hover:bg-gray-800"
           onClick={() => {
             setShow(!show)
           }}
