@@ -75,7 +75,7 @@ return (
         </header>
 
         <section className="flex-1 min-h-0 overflow-y-auto w-screen md:w-full">
-          {openControls ? ( <OpenControls /> ) : (<>{children}</>)}
+          {openControls ? ( <OpenControls setOpen={setOpenControls} /> ) : (<>{children}</>)}
         </section>
       </div>
       <div className="row-start-2 col-span-2 w-full">

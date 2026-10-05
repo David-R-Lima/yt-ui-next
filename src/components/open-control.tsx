@@ -4,16 +4,19 @@ import { formatTime } from "@/lib/formatTime"
 import { DownloadSongOffline, GetOfflineSong } from "@/services/offline"
 import UseControls from "@/store/song-control-store"
 import { AudioLines, Check, Download, Heart } from "lucide-react"
-import { useEffect, useState } from "react"
+import React, { SetStateAction, useEffect, useState } from "react"
 import { Button } from "./ui/button"
 import { UpdateSong } from "@/services/songs"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Liked } from "@/services/enums/liked"
+import { motion, useAnimation } from "motion/react"
 
-export function OpenControls() {
+export function OpenControls({setOpen}: {setOpen: React.Dispatch<SetStateAction<boolean>>}) {
     const { currentSong, playlist, setCurrentSongFromNext } = UseControls()
     const [isDownloaded, setIsDownloaded] = useState(false)
+
+      const controls = useAnimation()
 
     useEffect(() => {
         async function checkOfflineSong() {
@@ -37,9 +40,37 @@ export function OpenControls() {
         }
     })
 
+    const handleDragEnd = (
+        _: MouseEvent | TouchEvent | PointerEvent,
+        info: { offset: { x: number; y: number } }
+    ) => {
+        const threshold = 100
+
+        if (info.offset.y > threshold) {
+        // Swipe down
+        controls.start({
+            y: "calc(100% - 80px)",
+            transition: { type: "spring", stiffness: 400, damping: 35 },
+        })
+
+            setOpen(false)
+        }
+    }
+
     return (
-        <div className="flex flex-col md:grid md:grid-cols-[minmax(0,1fr)_50%] lg:grid-cols-[minmax(0,1fr)_35%] w-full h-full">
-            <div className="flex flex gap-4 items-center justify-center min-w-0 p-2">
+        <div className="flex flex-col md:grid md:grid-cols-[minmax(0,1fr)_50%] lg:grid-cols-[minmax(0,1fr)_35%] w-full h-full"
+        >
+            <motion.div 
+                className="flex flex gap-4 items-center justify-center min-w-0 p-2"
+                drag="y"
+                dragConstraints={{
+                    top: 0,
+                    bottom: 0,
+                }}
+                dragElastic={0}
+                onDragEnd={handleDragEnd}
+                animate={controls}
+            >
                 {currentSong?.img_url ? (
                     <img
                         className="size-36 md:size-48 lg:size-86 object-cover rounded"
@@ -91,7 +122,7 @@ export function OpenControls() {
                         )
                     }
                 </div>
-            </div>
+            </motion.div>
 
             <div className="w-full max-h-full overflow-x-hidden overflow-y-auto p-4">
                 {playlist.map((song, i) => (

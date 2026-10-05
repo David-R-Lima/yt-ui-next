@@ -13,6 +13,7 @@ import { UpdateNowListening } from "../services/now-listening"
 import { formatTime } from "@/lib/formatTime"
 import { offlineDB } from "@/lib/offlineDb"
 import { toast } from "sonner"
+import { motion, useAnimation } from "motion/react"
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL
 const token = process.env.NEXT_PUBLIC_TOKEN
@@ -20,6 +21,8 @@ const token = process.env.NEXT_PUBLIC_TOKEN
 export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetStateAction<boolean>>}) {
     const [addedToHistory, setAddedToHistory] = useState(false)
     const [audioSrc, setAudioSrc] = useState<string | undefined>()
+
+    const controls = useAnimation()
 
     const {
         currentSong,
@@ -207,9 +210,36 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
         };
     }, [play, pause, nextSong, previousSong]);
 
+    const handleDragEnd = (
+        _: MouseEvent | TouchEvent | PointerEvent,
+        info: { offset: { x: number; y: number } }
+    ) => {
+        const threshold = 100
+
+        if (info.offset.y < -threshold) {
+        // Swipe up
+        controls.start({
+            y: 0,
+            transition: { type: "spring", stiffness: 400, damping: 35 },
+        })
+
+            setOpen(true)
+        }
+    }
+
     return (
         <div className="flex flex-col w-screen h-full overflow-hidden">
-            <div className="z-5">
+            <motion.div 
+                className="z-5" 
+                drag="y"       
+                dragConstraints={{
+                    top: 0,
+                    bottom: 0,
+                }}
+                dragElastic={0}
+                onDragEnd={handleDragEnd}
+                animate={controls}
+            >
                 {currentSong && (
                     <div className="flex items-center w-full">
                         <input
@@ -427,7 +457,7 @@ export function Controls({open, setOpen}: {open: boolean, setOpen: Dispatch<SetS
                     </div>
                 </div>
                 
-            </div>
+            </motion.div>
 
             {currentSong?.local_url && (
                 <audio
