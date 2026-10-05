@@ -11,7 +11,7 @@ import { DivButton } from "../ui/div-but-button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
-import { GetOfflineSongs } from "@/services/offline"
+import { getCount, GetOfflineSongs } from "@/services/offline"
 import { OfflineSongItem } from "../downloaded-song-item"
 
 export function DisplayDownloaded() {
@@ -26,6 +26,7 @@ export function DisplayDownloaded() {
     const [durationLte, setDurationLte] = useState<number | undefined>(undefined)
     const [order, setOrder] = useState<OrderBy>(orderBy)
     const [resetFilters, setResetFilters] = useState(false)
+    const [count, setCount] = useState(10)
 
     const { data, isPending, isFetching, refetch, hasNextPage, fetchNextPage} = useInfiniteQuery({
         queryKey: ["offline-songs"],
@@ -87,6 +88,18 @@ export function DisplayDownloaded() {
         }
     }, [hasNextPage, fetchNextPage])
 
+    useEffect(() => {
+      const fetchCount = async () => {
+        try {
+          const res = await getCount()
+          setCount(res)
+        } catch (error) {
+          console.error("Failed to get count:", error)
+        }
+      }
+
+      fetchCount()
+    }, [])
 
     if(isPending) {
       return (
@@ -182,11 +195,13 @@ export function DisplayDownloaded() {
                 ) : (
                     <li className="text-gray-500">No songs found in this playlist.</li>
                 )}
-                  <div ref={observerRef} className="flex item-center justify-center bg-secondary-foreground m-2 p-2 mt-4 rounded-lg hover:cursor-pointer w-full bg-gray" onClick={() => {
-                    fetchNextPage()
-                  }}>
-                    {isPending ? (<Loader2 size="8" className="animate-spin" />) : ( <p>Load more</p>)}
-                  </div>
+                  {data?.songs && data.songs.length !== count && (
+                    <div ref={observerRef} className="flex item-center justify-center bg-secondary-foreground m-2 p-2 mt-4 rounded-lg hover:cursor-pointer w-full bg-gray" onClick={() => {
+                      fetchNextPage()
+                    }}>
+                      {isPending ? (<Loader2 size="8" className="animate-spin" />) : ( <p>Load more</p>)}
+                    </div>
+                  )}
               </div>
             </div>
         </div>

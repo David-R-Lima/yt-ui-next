@@ -110,3 +110,9 @@ export async function GetTotalSize() {
 
     return audioStorage
 }
+
+export async function getCount() {
+    const songs = await offlineDB.songs.toArray()
+
+    return songs.length
+}
