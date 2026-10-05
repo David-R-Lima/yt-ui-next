@@ -1,13 +1,15 @@
 import { Song } from "@/services/songs/types"
 import UseControls from "@/store/song-control-store"
 import Link from "next/link"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { EllipsisVertical, Plus } from "lucide-react"
 
 interface Props {
     item: Song
 }
 
 export function RecommendedItem({ item }: Props) {
-    const { currentSong, setCurrentSong, isPlaying } = UseControls()
+    const { currentSong, setCurrentSong, isPlaying, playNext } = UseControls()
 
     const isCurrent = currentSong === item && isPlaying
 
@@ -28,23 +30,24 @@ export function RecommendedItem({ item }: Props) {
                 />
             )}
 
-            <div className="min-w-0 flex-1">
-                {item?.title && (
-                    <h1
-                        className={`truncate font-medium hover:opacity-50 ${
-                            isCurrent
-                                ? "animate-pulse text-primary"
-                                : ""
-                        }`}
-                        onClick={() => {
-                            if (item) {
-                                setCurrentSong(item)
-                            }
-                        }}
-                    >
-                        {item.title}
-                    </h1>
-                )}
+            <div className="min-w-0 flex flex-1 items-center justify-between">
+                <div className="w-[90%]">
+                    {item?.title && (
+                        <h1
+                            className={`truncate font-medium hover:opacity-50 ${
+                                isCurrent
+                                    ? "animate-pulse text-primary"
+                                    : ""
+                            }`}
+                            onClick={() => {
+                                if (item) {
+                                    setCurrentSong(item)
+                                }
+                            }}
+                        >
+                            {item.title}
+                        </h1>
+                    )}
 
                     {item?.artist && (() => {
                         const artists = [
@@ -71,6 +74,20 @@ export function RecommendedItem({ item }: Props) {
                             </div>
                         );
                     })()}
+                </div>
+                <Popover>
+                    <PopoverTrigger className="hover:cursor-pointer">
+                        <EllipsisVertical></EllipsisVertical>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                        <div className="flex space-x-4 w-full hover:cursor-pointer hover:bg-secondary p-2 rounded-lg" onClick={() => {
+                            playNext(item)
+                        }}>
+                            <Plus></Plus>
+                            <p>Play next</p>
+                        </div>
+                    </PopoverContent>
+                </Popover>
             </div>
         </div>
     )

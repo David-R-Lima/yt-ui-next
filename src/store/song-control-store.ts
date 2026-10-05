@@ -5,6 +5,7 @@ import { Random } from '../services/enums/random'
 import { Source } from '../services/enums/source'
 import { Reverse } from '../services/enums/reverse'
 import { OrderBy } from '../services/enums/order-by'
+import { toast } from 'sonner'
 
 interface ControlsState {
   currentSong: Song | undefined
@@ -34,6 +35,7 @@ interface ControlsState {
   previousSong: () => void
   handleEndSong: () => void
   fetchNextSongs: (id: string) => Promise<Song[]>
+  playNext: (song: Song) => void
 }
 
 const UseControls = create<ControlsState>((set, get) => ({
@@ -201,6 +203,29 @@ const UseControls = create<ControlsState>((set, get) => ({
     } else {
       return songs
     }
+  },
+  playNext: (song: Song) => {
+    const { playlist, currentIndex } = get()
+
+    if (playlist[currentIndex]?.id === song.id ) {
+      return
+    }
+
+    if (playlist[currentIndex + 1]?.id === song.id) {
+      return
+    }
+
+    const newPlaylist = [
+      ...playlist.slice(0, currentIndex + 1),
+      song,
+      ...playlist.slice(currentIndex + 1),
+    ]
+
+    toast.message("Added to queue")
+
+    set({
+      playlist: newPlaylist,
+    })
   }
 }))
 

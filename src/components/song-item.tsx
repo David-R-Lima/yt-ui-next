@@ -23,7 +23,7 @@ interface Props {
 
 export function SongItem({ song, onClick, playlistId }: Props) {
 
-    const {currentSong, isPlaying} = UseControls()
+    const {currentSong, isPlaying, playNext} = UseControls()
 
     const [alertOpen, setAlertOpen] = useState(false)
 
@@ -167,27 +167,6 @@ export function SongItem({ song, onClick, playlistId }: Props) {
                         ))}
                     </DropdownMenuContent>
                 </DropdownMenu>
-                {
-                    song.liked ? (
-                        <Heart className="fill-primary text-primary transition-colors hover:animate-pulse hover:cursor-pointer" onClick={() => {
-                            updateSongMutation.mutate({
-                                song_id: song.id,
-                                liked: Liked.FALSE
-                            })
-
-                            song.liked = false
-                        }}/>
-                    ) : (
-                        <Heart className="transition-colors hover:animate-pulse hover:cursor-pointer" onClick={() => {
-                            updateSongMutation.mutate({
-                                song_id: song.id,
-                                liked: Liked.TRUE
-                            })
-
-                            song.liked = true
-                        }}/>
-                    )
-                }
                 <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                     <PopoverTrigger className="hover:cursor-pointer">
                         <EllipsisVertical />
@@ -206,6 +185,39 @@ export function SongItem({ song, onClick, playlistId }: Props) {
                                 <p>Remove from playlist</p>
                             </div>
                         )}
+                        <div className="flex space-x-4 w-full hover:cursor-pointer hover:bg-secondary p-2 rounded-lg" onClick={() => {
+                            playNext(song)
+                        }}>
+                            <Plus></Plus>
+                            <p>Play next</p>
+                        </div>
+                        {
+                            song.liked ? (
+                                <div className="flex space-x-4 w-full hover:cursor-pointer hover:bg-secondary p-2 rounded-lg" onClick={() => {
+                                        updateSongMutation.mutate({
+                                            song_id: song.id,
+                                            liked: Liked.FALSE
+                                        })
+
+                                        song.liked = false
+                                    }}>
+                                    <Heart className="fill-primary text-primary transition-colors hover:animate-pulse hover:cursor-pointer"/>
+                                    <p>Unlike</p>
+                                </div>
+                            ) : (
+                                <div className="flex space-x-4 w-full hover:cursor-pointer hover:bg-secondary p-2 rounded-lg" onClick={() => {
+                                        updateSongMutation.mutate({
+                                            song_id: song.id,
+                                            liked: Liked.TRUE
+                                        })
+
+                                        song.liked = true
+                                    }}>
+                                    <Heart className="transition-colors hover:animate-pulse hover:cursor-pointer"/>
+                                    <p>Like</p>
+                                </div>
+                            )
+                        }
                         <AlertDialog open={alertOpen} onOpenChange={(open) => {
                                 setAlertOpen(open);
                                 if (!open) {
