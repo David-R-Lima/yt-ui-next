@@ -26,9 +26,9 @@ return (
       )}
     >
     {/* Sidebar */}
-      <aside className="hidden md:block row-start-1 col-start-1 overflow-hidden border-r-2 border-gray-800 p-2">
+      <aside className="hidden md:block overflow-hidden border-r-2 border-gray-800 p-2">
         <button
-          className="flex items-center w-full p-2 rounded-lg hover:cursor-pointer hover:bg-gray-800"
+          className="flex hover:cursor-pointer hover:bg-gray-800 rounded-lg p-2"
           onClick={() => {
             setShow(!show)
           }}
@@ -36,7 +36,9 @@ return (
           <Menu />
         </button>
 
-        <NavList show={show} setSheetState={undefined} setOpenControls={setOpenControls}/>
+        <div className={`${show ? "" : "w-10"}`}>
+          <NavList show={show} setSheetState={undefined} setOpenControls={setOpenControls}/>
+        </div>
       </aside>
 
     {/* Main content */}
@@ -54,7 +56,7 @@ return (
                 </button>
               </SheetTrigger>
 
-              <SheetContent side="left" className="w-70 py-4 px-2">
+              <SheetContent side="left" className="flex items-center w-70 py-4 px-2">
                 <button className=" px-2 rounded-lg hover:bg-gray-800" onClick={() => {
                   setSheetState(!sheetState)
                 }}>

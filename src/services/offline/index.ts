@@ -1,7 +1,6 @@
 import { offlineDB } from "@/lib/offlineDb"
 import { Song } from "@/services/songs/types"
 import { getSongsProps } from "../songs"
-import { OrderBy } from "../enums/order-by"
 import { IPaginationResponse } from "../pagination"
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -56,12 +55,12 @@ export async function GetOfflineSong(songId: string) {
 }
 
 export async function GetOfflineSongs({
-    page = 1,
-    limit = 20,
-    order_by,
-    liked,
-    text,
-}: getSongsProps) {
+        page = 1,
+        limit = 20,
+        order_by,
+        liked,
+        text,
+    }: getSongsProps) {
     let songs = await offlineDB.songs.toArray()
 
     const totalSongs = songs.length
