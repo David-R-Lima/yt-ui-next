@@ -26,7 +26,7 @@ return (
       )}
     >
     {/* Sidebar */}
-      <aside className="hidden md:block overflow-hidden border-r-2 border-gray-800 p-2">
+      <aside className="w-full hidden md:block overflow-hidden border-r-2 border-gray-800 p-2">
         <button
           className="flex hover:cursor-pointer hover:bg-gray-800 rounded-lg p-2"
           onClick={() => {

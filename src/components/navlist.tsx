@@ -7,7 +7,7 @@ import { Dispatch, SetStateAction } from "react";
 export function NavList({show, setSheetState, setOpenControls}: {show: boolean, setSheetState: Dispatch<SetStateAction<boolean>> | undefined, setOpenControls: Dispatch<SetStateAction<boolean>>} ) {
     const router = useRouter()
     return (
-        <div className="h-screen">
+        <div className="h-screen w-full">
             <div className={`flex flex-col ${show ? "" : "items-center"} py-2`}>
                 <div className="flex space-x-2 hover:cursor-pointer hover:bg-gray-800 p-2 rounded-lg" onClick={() => {
                     setOpenControls(false)

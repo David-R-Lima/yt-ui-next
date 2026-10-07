@@ -9,9 +9,12 @@ import { toast } from "sonner"
 export function SmartDownloadComponent() {
     useEffect(() => {
         const load = async () => {
+            if (process.env.NODE_ENV === "development") {
+                return
+            }
             const smartdownload = await getCookie("smartDownload")
             const limit = await getCookie("downloadLimit")
-            const lastRun = await getCookie("smartdownload_last_run")
+            const lastRun = localStorage.getItem("smartdownload_last_run")
 
             if (smartdownload !== "true" || !limit || lastRun) {
                 return
@@ -21,9 +24,10 @@ export function SmartDownloadComponent() {
 
             await SmartDownload(Number(limit))
 
-            await setCookie("smartdownload_last_run", "true", {
-                maxAge: 60 * 60 * 24,
-            })
+            localStorage.setItem(
+                "smartdownload_last_run",
+                Date.now().toString()
+            )
         }
 
         load()
