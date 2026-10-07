@@ -12,6 +12,7 @@ export function SmartDownloadComponent() {
             if (process.env.NODE_ENV === "development") {
                 return
             }
+            
             const smartdownload = await getCookie("smartDownload")
             const limit = await getCookie("downloadLimit")
             const lastRun = localStorage.getItem("smartdownload_last_run")
