@@ -10,6 +10,7 @@ export interface OfflineSong {
   image: Blob | undefined
   local_url: string | undefined
   downloadedAt: number
+  smartDownloaded?: boolean
 }
 
 class OfflineDatabase extends Dexie {

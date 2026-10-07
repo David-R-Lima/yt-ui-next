@@ -5,7 +5,6 @@ import { Checkbox } from "../ui/checkbox"
 import { GetTotalSize } from "@/services/offline";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { getCookie, setCookie } from "cookies-next"
 import { useState } from "react";
 
@@ -38,18 +37,6 @@ export function DownloadsSettingsComponent() {
         return value ? Number(value) : 0
     })
 
-    const [downloadLimitUnit, setDownloadLimitUnit] = useState<
-        "kb" | "mb" | "gb"
-    >(() => {
-        const value = getCookie("downloadLimitUnit")
-
-        if (value === "kb" || value === "mb" || value === "gb") {
-            return value
-        }
-
-        return "gb"
-    })
-
     const [enableSmartDownload, setEnableSmartDownload] = useState(() => {
         const value = getCookie("smartDownload")
         return value === "true"
@@ -61,9 +48,6 @@ export function DownloadsSettingsComponent() {
         if(downloadLimit) {
             setCookie("downloadLimit", downloadLimit)
         }
-        if(downloadLimitUnit) {
-            setCookie("downloadLimitUnit", downloadLimitUnit)
-        }
     }
 
 
@@ -73,29 +57,14 @@ export function DownloadsSettingsComponent() {
                 <h1>Total size: </h1>
 
                 {totalSizeQuery.data && (
-                    <p>{formatStorage(totalSizeQuery.data)}</p>
+                    <p> {formatStorage(totalSizeQuery.data)}</p>
                 )}
             </div>
-            <h1>Download Limit:</h1>
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-row items-center space-x-2">
+                <h1>Download Limit:</h1>
                 <Input type="number" defaultValue={downloadLimit} onChange={(e) => {
                     setDownloadLimit(Number(e.currentTarget.value))
                 }} className="max-w-30"></Input>
-                <Select defaultValue={downloadLimitUnit} onValueChange={(e: "kb" | "mb" | "gb") => {
-                    setDownloadLimitUnit(e)
-                }}>
-                    <SelectTrigger className="max-w-30" >
-                        <SelectValue placeholder="GBs" />
-                    </SelectTrigger>
-                        <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel>Size</SelectLabel>
-                            <SelectItem value={"kb"}>KBs</SelectItem>
-                            <SelectItem value={"mb"}>MBs</SelectItem>
-                            <SelectItem value={"gb"}>GBs</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
             </div>
             <div className="flex items-center space-x-2">
                 <Checkbox checked={enableSmartDownload} onCheckedChange={(e) => {

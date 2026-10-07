@@ -39,3 +39,13 @@ export async function GetQuickSelect() {
 
   return data
 }
+
+export async function GetSmartDownloads(limit: number) {
+  const { data } = await api.get<{songIds: string[]}>('/history/smart', {
+    params: {
+      limit
+    }
+  })
+
+  return data
+}

@@ -1,12 +1,13 @@
 import { offlineDB } from "@/lib/offlineDb"
 import { Song } from "@/services/songs/types"
-import { getSongsProps } from "../songs"
+import { GetSongById, getSongsProps } from "../songs"
 import { IPaginationResponse } from "../pagination"
+import { GetSmartDownloads } from "../history"
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL
 const token = process.env.NEXT_PUBLIC_TOKEN
 
-export async function DownloadSongOffline(song: Song) {
+export async function DownloadSongOffline(song: Song, smartDownloaded?: boolean) {
     if (!song.local_url) return
 
     const response = await fetch(
@@ -21,17 +22,17 @@ export async function DownloadSongOffline(song: Song) {
 
     const audio = await response.blob()
 
-    if (song.img_url) {
-        try {
-            const imageResponse = await fetch(song.img_url)
+    // if (song.img_url) {
+    //     try {
+    //         const imageResponse = await fetch(song.img_url)
 
-            if (imageResponse?.ok) {
-                image = await imageResponse.blob()
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    //         if (imageResponse?.ok) {
+    //             image = await imageResponse.blob()
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
     const offlineSong = {
         id: song.id,
@@ -43,6 +44,7 @@ export async function DownloadSongOffline(song: Song) {
         local_url: song.local_url,
         image,
         downloadedAt: Date.now(),
+        smartDownloaded
     }
 
     await offlineDB.songs.put(offlineSong)
@@ -96,7 +98,7 @@ export async function GetOfflineSongs({
 export async function DeleteOfflineSong({song_id}: {
     song_id: string
 }) {
-
+    await offlineDB.songs.delete(song_id)
 }
 
 export async function GetTotalSize() {
@@ -114,4 +116,48 @@ export async function getCount() {
     const songs = await offlineDB.songs.toArray()
 
     return songs.length
+}
+
+export async function getAllIds() {
+    const localSongs = await offlineDB.songs.toArray()
+
+    return localSongs
+        .filter(song => song.id && song.smartDownloaded)
+        .map(song => song.id)
+}
+
+export async function SmartDownload(limit: number) {
+    const songs = await getAllIds()
+    const songsToDownload = await GetSmartDownloads(limit)
+
+    const songsToAdd = songsToDownload.songIds.filter(
+        id => !songs.includes(id)
+    )
+
+    const songsToRemove = songs.filter(
+        id => !songsToDownload.songIds.includes(id)
+    )
+
+    const delay = (ms: number) =>
+        new Promise(resolve => setTimeout(resolve, ms))
+
+    for (let i = 0; i < songsToAdd.length; i++) {
+        const id = songsToAdd[i]
+
+        console.log("downloading song:", id)
+
+        const { song } = await GetSongById(id)
+
+        if (song) {
+            await DownloadSongOffline(song)
+        }
+
+        if (i < songsToAdd.length - 1) {
+            await delay(2000)
+        }
+    }
+
+    for (const id of songsToRemove) {
+        await DeleteOfflineSong({song_id: id})
+    }
 }
