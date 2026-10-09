@@ -96,8 +96,8 @@ export function Home() {
                 </Carousel>
             </div>
 
-            <div className="">
-                <div className="w-full flex items-center p-4 space-x-8">
+            <div className="max-w-screen  p-4">
+                <div className="w-full flex items-center space-x-8">
                     <Button className="w-28" onClick={() => {
                         randomSongMutation.mutate({
                             from: "ALL"
