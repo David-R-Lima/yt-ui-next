@@ -121,3 +121,13 @@ export async function GetSongById(id: string) {
   
   return data
 }
+
+export async function GetRandom(from: string) {
+  const { data } = await api.get<{song: Song}>('/songs/random', {
+    params: {
+      from
+    }
+  })
+
+  return data
+}

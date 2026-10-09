@@ -1,17 +1,21 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@//components/ui/card";
 import { GetMyLikedPlaylist } from "@//services/youtube";
-import { Loader2, MoveLeft, MoveRight } from "lucide-react";
+import { DicesIcon, Heart, Loader2, MoveLeft, MoveRight } from "lucide-react";
 import { YoutubeItem } from "./yt-video-item";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "@//components/ui/carousel";
 import { useEffect, useRef, useState } from "react";
 import { GetQuickSelect } from "@//services/history";
 import { QuickSelectItem } from "./quick-select-item";
 import { RecommendedItem } from "./recommended-item";
-import { GetRecommended } from "@/services/songs";
+import { GetRandom, GetRecommended } from "@/services/songs";
+import { Button } from "../ui/button";
+import UseControls from "@/store/song-control-store";
 
 export function Home() {
     const [quickSelectApi, setQuickSelectApi] = useState<CarouselApi>()
+
+    const { setCurrentSong } = UseControls()
 
     const historyQuery = useQuery({
         queryKey: ["quick-select"],
@@ -21,6 +25,18 @@ export function Home() {
     const recommendedQuery = useQuery({
         queryKey: ["recommended"],
         queryFn: GetRecommended
+    })
+
+    const randomSongMutation = useMutation({
+        mutationFn: async ({ from } : {
+            from: string
+        }) => {
+            const data = await GetRandom(from)
+
+            if(data.song) {
+                setCurrentSong(data.song)
+            }
+        }
     })
 
     const items = recommendedQuery.data ?? [];
@@ -78,6 +94,27 @@ export function Home() {
                         ))}
                     </CarouselContent>
                 </Carousel>
+            </div>
+
+            <div className="">
+                <div className="w-full flex items-center p-4 space-x-8">
+                    <Button className="w-28" onClick={() => {
+                        randomSongMutation.mutate({
+                            from: "ALL"
+                        })
+                    }}>
+                        <DicesIcon></DicesIcon>
+                        <p>Random</p>
+                    </Button>
+                    <Button className="w-28 border-r-2" onClick={() => {
+                        randomSongMutation.mutate({
+                            from: "LIKED"
+                        })
+                    }}>
+                        <Heart className=""></Heart>
+                        <p>Liked</p>
+                    </Button>
+                </div>
             </div>
 
             <div className="space-y-4 px-4">
