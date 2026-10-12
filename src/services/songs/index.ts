@@ -131,3 +131,9 @@ export async function GetRandom(from: string) {
 
   return data
 }
+
+export async function GetArtists() {
+    const { data } = await api.get<{artists: string[]}>('/artists/recent')
+
+  return data
+}

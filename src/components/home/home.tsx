@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { GetQuickSelect } from "@//services/history";
 import { QuickSelectItem } from "./quick-select-item";
 import { RecommendedItem } from "./recommended-item";
-import { GetRandom, GetRecommended } from "@/services/songs";
+import { GetArtists, GetRandom, GetRecommended } from "@/services/songs";
 import { Button } from "../ui/button";
 import UseControls from "@/store/song-control-store";
 
@@ -27,7 +27,24 @@ export function Home() {
         queryFn: GetRecommended
     })
 
+    const artistQuery = useQuery({
+        queryKey: ["artists"],
+        queryFn: GetArtists
+    })
+
     const randomSongMutation = useMutation({
+        mutationFn: async ({ from } : {
+            from: string
+        }) => {
+            const data = await GetRandom(from)
+
+            if(data.song) {
+                setCurrentSong(data.song)
+            }
+        }
+    })
+
+    const randomArtistSongMutation = useMutation({
         mutationFn: async ({ from } : {
             from: string
         }) => {
@@ -97,8 +114,8 @@ export function Home() {
             </div>
 
             <div className="max-w-screen  p-4">
-                <div className="w-full flex items-center space-x-8">
-                    <Button className="w-28" onClick={() => {
+                <div className="w-full flex items-center space-x-8 overflow-x-scroll pb-2">
+                    <Button className="w-30" onClick={() => {
                         randomSongMutation.mutate({
                             from: "ALL"
                         })
@@ -106,7 +123,7 @@ export function Home() {
                         <DicesIcon></DicesIcon>
                         <p>Random</p>
                     </Button>
-                    <Button className="w-28 border-r-2" onClick={() => {
+                    <Button className="w-30 border-r-2" onClick={() => {
                         randomSongMutation.mutate({
                             from: "LIKED"
                         })
@@ -114,6 +131,22 @@ export function Home() {
                         <Heart className=""></Heart>
                         <p>Liked</p>
                     </Button>
+                    {artistQuery.data &&
+                        [...new Set(
+                            artistQuery.data.artists.map((artist) => {
+                                const name = artist.split(',')[0].trim()
+                                return [...new Set(name.split(/\s+/))].join(' ')
+                            })
+                        )].map((name, i) => (
+                            <Button
+                                key={name}
+                                className="truncate w-45 border-r-2"
+                                onClick={() => randomSongMutation.mutate({ from: name })}
+                            >
+                                <p>{name}</p>
+                            </Button>
+                        ))
+                    }
                 </div>
             </div>
 
